@@ -69,11 +69,11 @@ export class ManageCategoryComponent implements OnInit {
       this.tableData()
     })
   }
-  handleEditAction(value: any) {
+  handleEditAction(values : any) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
       action: 'Edit',
-      data:value
+      data:values
     }
     dialogConfig.width = "850px";
     const dialogRef = this.dialog.open(CategoryComponent, dialogConfig);
