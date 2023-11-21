@@ -10,7 +10,8 @@ export interface Menu {
 
 const MENUITEMS = [
   { state: 'dashboard', name: 'dashboard', icon: 'dashboard', role: '' },
-  { state: 'Category', name: 'manage Category', icon: 'category', role: 'admin' }
+  { state: 'Category', name: 'manage Category', icon: 'category', role: 'admin' },
+  { state: 'Product', name: 'manage Product', icon: 'inventory_2', role: 'admin' }
 
 ];
 

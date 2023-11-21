@@ -1,0 +1,65 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row fxlayout="row">
+    <span class="tille-center">{{dialogData.action}} Product</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+<mat-dialog-content class="mat-typography">
+  <form [formGroup]="ProductForm">
+    <div fxFlex fxLayout="column">
+
+      <div fxLayout="row wrap">
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>name</mat-label>
+          <input matInput formControlName="name" required>
+          <mat-error *ngIf="ProductForm.controls.name.touched && ProductForm.controls.name.invalid">
+            <span *ngIf="ProductForm.controls.name.errors.required">This field is mandatory. </span>
+            <span *ngIf="ProductForm.controls.name.errors.pattern">This field is invalid. </span>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+
+      <div fxLayout="row wrap">
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>Price</mat-label>
+          <input matInput formControlName="price" required>
+          <mat-error *ngIf="ProductForm.controls.price.touched && ProductForm.controls.price.invalid">
+            <span *ngIf="ProductForm.controls.price.errors.required">This field is mandatory. </span>
+            <span *ngIf="ProductForm.controls.price.errors.pattern">This field is invalid. </span>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>Category</mat-label>
+          <mat-select formControlName="categoryId">
+            <mat-option *ngFor="let Category of categorys" [value]="Category.id">{{Category.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+
+      <div fxLayout="row wrap">
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>Description </mat-label>
+          <input matInput formControlName="description" required>
+          <mat-error *ngIf="ProductForm.controls.description.touched && ProductForm.controls.description.invalid">
+            <span *ngIf="ProductForm.controls.description.errors.required">This field is mandatory. </span>
+            <span *ngIf="ProductForm.controls.description.errors.pattern">This field is invalid. </span>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+
+    </div>
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+
+  <button mat-raised-button color="primary" type="submit" (click)="handleSubmit() "
+    [disabled]="!(ProductForm.valid && ProductForm.dirty)">{{action}}</button>
+  <button mat-raised-button colour="primary" mat-dialog-close>Close</button>
+
+</mat-dialog-actions>
