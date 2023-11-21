@@ -32,7 +32,7 @@
         <mat-form-field appearance="fill" fxFlex>
           <mat-label>Category</mat-label>
           <mat-select formControlName="categoryId">
-            <mat-option *ngFor="let Category of categorys" [value]="Category.id">{{Category.name}}
+            <mat-option *ngFor="let category of categorys" [value]="category.id">{{category.name}}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -58,8 +58,9 @@
 
 <mat-dialog-actions align="center">
 
-  <button mat-raised-button color="primary" type="submit" (click)="handleSubmit() "
-    [disabled]="!(ProductForm.valid && ProductForm.dirty)">{{action}}</button>
+  <button mat-raised-button color="primary" type="submit" (click)="handleSubmit() ">{{action}}</button>
+    <!-- [disabled]="!(ProductForm.valid && ProductForm.dirty)" -->
+
   <button mat-raised-button colour="primary" mat-dialog-close>Close</button>
 
 </mat-dialog-actions>

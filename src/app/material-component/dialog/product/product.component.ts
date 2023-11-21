@@ -46,6 +46,7 @@ export class ProductComponent implements OnInit {
       this.ProductForm.patchValue(this.dialogData.data);
 
     }
+    this.getCategorys();
   }
   getCategorys() {
     this.categoryServices.getCategory().subscribe((response: any) => {
@@ -109,7 +110,7 @@ export class ProductComponent implements OnInit {
     }
     this.productServices.update(data).subscribe((response: any) => {
       this.dialogRef.close();
-      this.onAddProduct.emit();
+      this.onEditProduct.emit();
       this.responseMessage = response.message;
       this.snackbarServices.openSnackbar(this.responseMessage, "success")
     }, (error: any) => {

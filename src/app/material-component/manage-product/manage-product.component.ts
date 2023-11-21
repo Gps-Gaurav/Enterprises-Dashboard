@@ -70,6 +70,7 @@ export class ManageProductComponent implements OnInit {
       this.tableData()
     })
   }
+  
   handleEditAction(values: any) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
@@ -100,6 +101,7 @@ export class ManageProductComponent implements OnInit {
       dialogRef.close();
     })
   }
+
   deleteProduct(id: any) {
     this.productServices.delete(id).subscribe((response: any) => {
       this.ngxServices.stop();
