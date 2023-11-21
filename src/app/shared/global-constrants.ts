@@ -5,6 +5,10 @@ public static genericError:string = "something went wrong , please try again lat
 
 public static unauthroized : string = "you are not authorized persion to access this page"
 
+public static productExistError: string = "product already exists";
+
+public static productAdded : string = "Product Added successfully";
+
 //rejax
 
 public static nameRegex :string ="[a-zA-Z0-9]*";
