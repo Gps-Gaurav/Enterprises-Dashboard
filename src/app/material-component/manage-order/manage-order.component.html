@@ -1,1 +1,54 @@
-<p>manage-order works!</p>
+<mat-card>
+  <b><span>Manage Order</span></b>
+  <button mat-flat-button color="primary" class="float-right" [disabled]="validateSubmit()"
+    (click)="submitAction()">Submit & Get Bill</button>
+</mat-card>
+<hr>
+<mat-card>
+  <b><span>Customer Details </span></b>
+  <form [formGroup]="manageOrderForm">
+    <div fxFlex fxLayout="column">
+      <div fxLayout="row-wrap">
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" required="required">
+          <mat-error *ngIf="manageOrderForm.controls.name.touched && manageOrderForm.controls.name.invalid">
+            <span *ngIf="manageOrderForm.controls.name.errors.required">This field is mandatory. </span>
+            <span *ngIf="manageOrderForm.controls.name.errors.pattern">This field is invalid. </span>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" required="required">
+          <mat-error *ngIf="manageOrderForm.controls.email.touched && manageOrderForm.controls.email.invalid">
+            <span *ngIf="manageOrderForm.controls.email.errors.required">This field is mandatory. </span>
+            <span *ngIf="manageOrderForm.controls.email.errors.pattern">This field is invalid. </span>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>Contact Number</mat-label>
+          <input matInput formControlName="contactNumber" required="required">
+          <mat-error
+            *ngIf="manageOrderForm.controls.contactNumber.touched && manageOrderForm.controls.contactNumber.invalid">
+            <span *ngIf="manageOrderForm.controls.contactNumber.errors.required">This field is mandatory. </span>
+            <span *ngIf="manageOrderForm.controls.contactNumber.errors.pattern">This field is invalid. </span>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" fxFlex>
+          <mat-label>Payment Method</mat-label>
+          <mat-select>
+            <mat-option value="Cash">Cash</mat-option>
+            <mat-option value="Debit Card">Debit Card</mat-option>
+            <mat-option value="Credit Card">Credit Card</mat-option>
+          </mat-select>
+
+        </mat-form-field>
+
+      </div>
+    </div>
+
+  </form>
+</mat-card>
+<hr>
+<b><span>Select Product </span></b>
