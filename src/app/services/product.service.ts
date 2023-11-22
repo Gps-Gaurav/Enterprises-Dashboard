@@ -40,12 +40,12 @@ export class ProductService {
     })
   }
 
-  getProductBYCategory(id: any) {
-    return this.httpClient.get(this.url + "product/getByCategory" + id);
+  getProductByCategory(id: any) {
+    return this.httpClient.get(this.url + "product/getByCategory/" + id);
   }
 
   getById(id: any) {
-    return this.httpClient.get(this.url + "product/getById" + id);
+    return this.httpClient.get(this.url + "product/getById/" + id);
   }
-   
+
 }

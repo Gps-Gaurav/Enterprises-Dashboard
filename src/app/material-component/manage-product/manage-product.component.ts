@@ -44,7 +44,7 @@ export class ManageProductComponent implements OnInit {
         this.responseMessage = GlobalConstants.genericError;
 
       }
-      this.responseMessage.openSnackbar(this.responseMessage, GlobalConstants.error);
+      this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
     })
 
   }
@@ -70,7 +70,7 @@ export class ManageProductComponent implements OnInit {
       this.tableData()
     })
   }
-  
+
   handleEditAction(values: any) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
@@ -118,7 +118,7 @@ export class ManageProductComponent implements OnInit {
           this.responseMessage = GlobalConstants.genericError;
 
         }
-        this.responseMessage.openSnackbar(this.responseMessage, GlobalConstants.error);
+        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
       })
 
 
@@ -142,7 +142,7 @@ export class ManageProductComponent implements OnInit {
         this.responseMessage = GlobalConstants.genericError;
 
       }
-      this.responseMessage.openSnackbar(this.responseMessage, GlobalConstants.error);
+      this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
     })
   }
 

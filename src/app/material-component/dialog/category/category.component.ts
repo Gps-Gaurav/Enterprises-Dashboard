@@ -73,7 +73,7 @@ private dialogRef: MatDialogRef<CategoryComponent>,
         this.responseMessage = GlobalConstants.genericError;
 
       }
-      this.responseMessage.openSnackbar(this.responseMessage, GlobalConstants.error);
+      this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
     })
 
 
@@ -99,7 +99,7 @@ private dialogRef: MatDialogRef<CategoryComponent>,
         this.responseMessage = GlobalConstants.genericError;
 
       }
-      this.responseMessage.openSnackbar(this.responseMessage, GlobalConstants.error);
+      this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
     })
 
    }

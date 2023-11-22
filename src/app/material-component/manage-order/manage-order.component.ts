@@ -67,13 +67,13 @@ export class ManageOrderComponent implements OnInit {
           this.responseMessage = GlobalConstants.genericError;
 
         }
-        this.responseMessage.openSnackbar(this.responseMessage, GlobalConstants.error);
+        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
       })
 
   }
   getProductByCategory(value: any) {
-    this.productServices.getProductBYCategory(value.id).subscribe((respose: any) => {
-      this.products = respose;
+    this.productServices.getProductByCategory(value.id).subscribe((response: any) => {
+      this.products = response;
       this.manageOrderForm.controls['price'].setValue('');
       this.manageOrderForm.controls['quantity'].setValue('');
       this.manageOrderForm.controls['total'].setValue(0);
@@ -87,16 +87,16 @@ export class ManageOrderComponent implements OnInit {
           this.responseMessage = GlobalConstants.genericError;
 
         }
-        this.responseMessage.openSnackbar(this.responseMessage, GlobalConstants.error);
+        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
       })
   }
 
   getProductDetails(value: any) {
     this.productServices.getById(value.id).subscribe((response: any) => {
       this.price = response.price;
-      this.manageOrderForm.controls['price'].setValue('');
-      this.manageOrderForm.controls['quantity'].setValue('');
-      this.manageOrderForm.controls['total'].setValue(0);
+      this.manageOrderForm.controls['price'].setValue(response.price);
+      this.manageOrderForm.controls['quantity'].setValue('1');
+      this.manageOrderForm.controls['total'].setValue(this.price * 1);
     },
       (error: any) => {
         this.ngxServices.stop();
@@ -107,7 +107,7 @@ export class ManageOrderComponent implements OnInit {
           this.responseMessage = GlobalConstants.genericError;
 
         }
-        this.responseMessage.openSnackbar(this.responseMessage, GlobalConstants.error);
+        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
       })
   }
 
@@ -187,7 +187,7 @@ export class ManageOrderComponent implements OnInit {
           this.responseMessage = GlobalConstants.genericError;
 
         }
-        this.responseMessage.openSnackbar(this.responseMessage, GlobalConstants.error);
+        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
       })
   }
 
