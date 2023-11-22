@@ -11,7 +11,7 @@
 
       <mat-form-field appearance="fill" fxFlex>
         <mat-label>email</mat-label>
-        <input matInput formControlName="email" required>
+        <input tabindex="1" matInput formControlName="email" required>
         <mat-error *ngIf="loginForm.controls.email.touched && loginForm.controls.email.invalid">
           <span *ngIf="loginForm.controls.email.errors.required">This field is mandatory. </span>
           <span *ngIf="loginForm.controls.email.errors.pattern">This field is invalid. </span>
@@ -20,7 +20,7 @@
 
       <mat-form-field appearance="fill" fxFlex>
         <mat-label>Password</mat-label>
-        <input matInput formControlName="password" required>
+        <input matInput tabindex="2" formControlName="password" required>
         <mat-error *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
           <span *ngIf="loginForm.controls.password.errors.required">This field is mandatory. </span>
           <span *ngIf="loginForm.controls.password.errors.pattern">This field is invalid. </span>
@@ -34,8 +34,8 @@
 
 <mat-dialog-actions align="center">
 
-  <button mat-raised-button color="primary" type="submit" (click)="handleSubmit() "
+  <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()" tabindex="3"
     [disabled]="!(loginForm.valid && loginForm.dirty)"> Login </button>
-  <button mat-raised-button colour="primary" mat-dialog-close>Close</button>
+  <button mat-raised-button colour="primary" mat-dialog-close tabindex="4">Close</button>
 
 </mat-dialog-actions>
