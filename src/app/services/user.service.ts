@@ -47,4 +47,14 @@ export class UserService {
     return this.httpClient.get(this.url + "/user");
   }
 
+  getUser(){
+    return this.httpClient.get(this.url + "/user/get");
+  }
+
+  update(data:any){
+    return this.httpClient.patch(this.url+
+      "/user/update",data,{
+        headers: new HttpHeaders().set('Content-Type', 'application/json')
+      })
+  }
 }

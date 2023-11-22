@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
         this.responseMessage = GlobalConstants.genericError;
 
       }
-      this.responseMessage.openSnackbar(this.responseMessage,GlobalConstants.error);
+      this.snackbarservices.openSnackbar(this.responseMessage,GlobalConstants.error);
     })
   }
 

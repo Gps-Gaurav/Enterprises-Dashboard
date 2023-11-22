@@ -5,7 +5,6 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ProductService } from 'src/app/services/product.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { GlobalConstants } from 'src/app/shared/global-constrants';
-import { CategoryComponent } from '../category/category.component';
 import { CategoryService } from 'src/app/services/category.service';
 
 @Component({
