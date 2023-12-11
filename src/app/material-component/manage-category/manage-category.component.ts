@@ -8,6 +8,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { error } from 'console';
 import { GlobalConstants } from 'src/app/shared/global-constrants';
 import { Router } from '@angular/router';
+import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 
 @Component({
   selector: 'app-manage-category',
@@ -84,5 +85,39 @@ export class ManageCategoryComponent implements OnInit {
     const sub = dialogRef.componentInstance.onEditCategory.subscribe((response) => {
       this.tableData()
     })
+  }
+  handleDeleteAction(values: any) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      message: 'delete' + values.name + 'product'
+    }
+    const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
+    const sub = dialogRef.componentInstance.onEmitStatuschange.subscribe((response) => {
+      this.ngxServices.start();
+      this.deleteProduct(values.id)
+      dialogRef.close();
+    })
+  }
+
+  deleteProduct(id: any) {
+    this.categoryServices.delete(id).subscribe((response: any) => {
+      this.ngxServices.stop();
+      this.tableData();
+      this.responseMessage = response?.message;
+      this.snackbarServices.openSnackbar(this.responseMessage, "success");
+    }
+      , (error: any) => {
+        this.ngxServices.stop();
+        if (error.error?.message) {
+          this.responseMessage = error.error?.message;
+
+        } else {
+          this.responseMessage = GlobalConstants.genericError;
+
+        }
+        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
+      })
+
+
   }
 }

@@ -26,4 +26,10 @@ export class CategoryService {
   getCategory() {
     return this.httpClient.get(this.url + "/category/get");
   }
+  delete(id: any) {
+    return this.httpClient.delete(this.url +
+      "/category/delete/" + id, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json')
+    })
+  }
 }
