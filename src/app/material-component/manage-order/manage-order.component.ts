@@ -123,10 +123,11 @@ export class ManageOrderComponent implements OnInit {
   }
 
   validateProductAdd() {
-    if (this.manageOrderForm.controls['total'].value === 0 || this.manageOrderForm.controls['total'].value === null || this.manageOrderForm.controls['quantity'].value <= 0)
-      return true;
-    else
-      return false;
+    return true;
+    // if (this.manageOrderForm.controls['total'].value === 0 || this.manageOrderForm.controls['total'].value === null || this.manageOrderForm.controls['quantity'].value <= 0)
+    //   return true;
+    // else
+    //   return false;
   }
 
   validateSubmit() {

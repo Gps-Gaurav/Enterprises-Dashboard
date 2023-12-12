@@ -1,6 +1,6 @@
 <mat-card>
   <b><span>Manage Order</span></b>
-  <button mat-flat-button color="primary" class="float-right" [disabled]="validateSubmit()"
+  <button mat-flat-button color="primary" class="float-right"
     (click)="submitAction()">Submit & Get Bill</button>
 </mat-card>
 <hr>
@@ -72,7 +72,7 @@
 
         <mat-form-field appearance="fill" fxFlex>
           <mat-label>Price</mat-label>
-          <input matInput formControlName="price" required readonly>
+          <input matInput formControlName="price" required>
           <mat-error *ngIf="manageOrderForm.controls.price.touched && manageOrderForm.controls.price.invalid">
             <span *ngIf="manageOrderForm.controls.price.errors.required">This field is mandatory. </span>
             <span *ngIf="manageOrderForm.controls.price.errors.pattern">This field is invalid. </span>
