@@ -1,0 +1,184 @@
+:host {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+
+.carousel-container {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: 60px; // Adjust this value based on your navbar height
+
+  .slide-container {
+    width: 100%;
+    height: 600px; // Adjust height as needed
+
+    .slide-image {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+      }
+
+      .slide-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: white;
+        z-index: 2;
+        width: 80%;
+        max-width: 1200px;
+
+        .slide-title {
+          font-size: 3.5rem;
+          font-weight: 700;
+          margin-bottom: 1rem;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+          @media (max-width: 768px) {
+            font-size: 2rem;
+          }
+        }
+
+        .slide-description {
+          font-size: 1.5rem;
+          margin-bottom: 2rem;
+          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+
+          @media (max-width: 768px) {
+            font-size: 1.2rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .owl-theme {
+    .owl-nav {
+      margin-top: 0;
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      transform: translateY(-50%);
+
+      [class*='owl-'] {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.7) !important;
+        color: #000;
+        font-size: 24px;
+        padding: 15px !important;
+        margin: 0;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        &.owl-prev {
+          left: 20px;
+        }
+
+        &.owl-next {
+          right: 20px;
+        }
+      }
+    }
+
+    .owl-dots {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+
+      .owl-dot {
+        span {
+          width: 12px;
+          height: 12px;
+          margin: 5px;
+          background: rgba(255, 255, 255, 0.5);
+          transition: all 0.3s ease;
+        }
+
+        &.active,
+        &:hover {
+          span {
+            background: white;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .carousel-container {
+    .slide-container {
+      height: 400px; // Smaller height for mobile
+
+      .slide-image {
+        .slide-content {
+          width: 90%;
+
+          .slide-title {
+            font-size: 2rem;
+          }
+
+          .slide-description {
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+  }
+
+  ::ng-deep {
+    .owl-theme {
+      .owl-nav {
+        [class*='owl-'] {
+          width: 40px;
+          height: 40px;
+          font-size: 18px;
+        }
+      }
+    }
+  }
+}
+
+// Optional: Add animation for slide content
+@keyframes slideInUp {
+  from {
+    transform: translate(-50%, 20px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+}
+
+.slide-content {
+  animation: slideInUp 0.5s ease-out forwards;
+}

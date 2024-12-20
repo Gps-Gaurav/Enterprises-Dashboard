@@ -37,7 +37,7 @@ body {
 }
 
 /* Column container */
-.row {  
+.row {
   display: flex;
   flex-wrap: wrap;
 }
@@ -69,12 +69,12 @@ body {
   padding: 6px;
   text-align: center;
   color: white;
-  background: #e53935;
+  background: #283039;
 }
 
 /* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 700px) {
-  .row, .navbar {   
+  .row, .navbar {
     flex-direction: column;
   }
 }
@@ -111,7 +111,7 @@ body {
   display: flex;
   align-items: center;
   justify-content:center;
-  background-color: #e53935;
+  background-color: #0c3b81;
 }
 
 nav {
@@ -167,24 +167,24 @@ a:hover::after {
   .wrapper {
     height: auto;
   }
-  
+
   nav {
     flex-direction: column;
     align-items: center;
   }
-  
+
   a.logo {
     margin-top: 1.5em;
     margin-bottom: 1.5em;
     margin-right: 0px;
   }
-  
+
   ul {
     width: 100%;
     margin-bottom: 1em;
     justify-content: space-between;
   }
-  
+
   ul li a {
     margin-left: 0px;
   }
@@ -194,16 +194,16 @@ a:hover::after {
   a.logo {
     margin: 1.5em;
   }
-  
+
   ul {
     flex-direction: column;
   }
-  
+
   ul li {
     margin: 0.3em;
     text-align: center;
   }
-  
+
   ul li a {
     margin-left: 0px;
   }
@@ -222,14 +222,14 @@ a:hover::after {
 .bg-image {
   /* The image used */
   background-image: url("../../assets/img/food1.jpg");
-  
+
   /* Add the blur effect */
   filter: blur(3px);
   -webkit-filter: blur(3px);
-  
+
   /* Full height */
-  height: 100%; 
-  
+  height: 100%;
+
   /* Center and scale the image nicely */
   background-position: center;
   background-repeat: no-repeat;
