@@ -1,13 +1,13 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row fxlayout="row">
-    <span class="tille-center">SignUp</span>
+    <span class="tille-center">Register</span>
   </mat-toolbar-row>
 </mat-toolbar>
 
 <mat-dialog-content class="mat-typography">
   <form [formGroup]="signupForm">
     <div fxFlex fxLayout="column">
-      
+
       <mat-form-field appearance="fill" fxFlex>
         <mat-label>name</mat-label>
         <input matInput formControlName="name" required>
@@ -51,7 +51,15 @@
 <mat-dialog-actions align="center">
 
   <button mat-raised-button color="primary" type="submit" (click)="handleSubmit() "
-    [disabled]="!(signupForm.valid && signupForm.dirty)">SignUp</button>
+    [disabled]="!(signupForm.valid && signupForm.dirty)">Register</button>
   <button mat-raised-button colour="primary" mat-dialog-close>Close</button>
 
 </mat-dialog-actions>
+
+<div style="margin-top: 10px; text-align: center;">
+  <span>If you are already Register ?</span>
+  <a (click)="loginAction()" style="cursor: pointer"
+     onmouseover="this.style.color='blue'"
+     onmouseout="this.style.color='black'"> Login</a>
+</div>
+

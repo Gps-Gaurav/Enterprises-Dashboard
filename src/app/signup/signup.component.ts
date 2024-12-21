@@ -4,10 +4,11 @@ import { Route, Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarService } from '../services/snackbar.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { GlobalConstants } from '../shared/global-constrants';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { time } from 'console';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-signup',
@@ -22,15 +23,19 @@ export class SignupComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, private router: Router,
     private userServices: UserService, private snackbarservices: SnackbarService,
     private dialogRef: MatDialogRef<SignupComponent>,
-    private ngxService: NgxUiLoaderService) { }
-
+    private ngxService: NgxUiLoaderService, private dialog: MatDialog) {}
   ngOnInit(): void {
     this.signupForm = this.formBuilder.group({
-      name: [null, [Validators.required, Validators.pattern(GlobalConstants.nameRegex)]],
+      name: [null, [Validators.required, Validators.pattern(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/)]],
       email: [null, [Validators.required, Validators.pattern(GlobalConstants.emailRegex)]],
       contactNumber: [null, [Validators.required, Validators.pattern(GlobalConstants.contactNumberRegex)]],
       password: [null, [Validators.required]],
     })
+  }
+  loginAction() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = "500px";
+    this.dialog.open(LoginComponent, dialogConfig);
   }
   handleSubmit() {
     this.ngxService.start();

@@ -7,35 +7,78 @@
 <mat-dialog-content class="mat-typography">
   <form [formGroup]="loginForm">
     <div fxFlex fxLayout="column">
-
-
       <mat-form-field appearance="fill" fxFlex>
         <mat-label>email</mat-label>
-        <input tabindex="1" matInput formControlName="email" required>
-        <mat-error *ngIf="loginForm.controls.email.touched && loginForm.controls.email.invalid">
-          <span *ngIf="loginForm.controls.email.errors.required">This field is mandatory. </span>
-          <span *ngIf="loginForm.controls.email.errors.pattern">This field is invalid. </span>
+        <input tabindex="1" matInput formControlName="email" required />
+        <mat-error
+          *ngIf="
+            loginForm.controls.email.touched && loginForm.controls.email.invalid
+          "
+        >
+          <span *ngIf="loginForm.controls.email.errors.required"
+            >This field is mandatory.
+          </span>
+          <span *ngIf="loginForm.controls.email.errors.pattern"
+            >This field is invalid.
+          </span>
         </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="fill" fxFlex>
         <mat-label>Password</mat-label>
-        <input matInput tabindex="2" formControlName="password" required>
-        <mat-error *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
-          <span *ngIf="loginForm.controls.password.errors.required">This field is mandatory. </span>
-          <span *ngIf="loginForm.controls.password.errors.pattern">This field is invalid. </span>
+        <input matInput tabindex="2" formControlName="password" required />
+        <mat-error
+          *ngIf="
+            loginForm.controls.password.touched &&
+            loginForm.controls.password.invalid
+          "
+        >
+          <span *ngIf="loginForm.controls.password.errors.required"
+            >This field is mandatory.
+          </span>
+          <span *ngIf="loginForm.controls.password.errors.pattern"
+            >This field is invalid.
+          </span>
         </mat-error>
       </mat-form-field>
-
     </div>
-
   </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="center">
-
-  <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()" tabindex="3"
-    [disabled]="!(loginForm.valid && loginForm.dirty)"> Login </button>
-  <button mat-raised-button colour="primary" mat-dialog-close tabindex="4">Close</button>
-
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    (click)="handleSubmit()"
+    tabindex="3"
+    [disabled]="!(loginForm.valid && loginForm.dirty)"
+  >
+    Login
+  </button>
+  <button mat-raised-button colour="primary" mat-dialog-close tabindex="4">
+    Close
+  </button>
 </mat-dialog-actions>
+<div>
+  <div>
+    <a
+      (click)="signupAction()"
+      style="cursor: pointer"
+      onmouseover="this.style.color='blue'"
+      onmouseout="this.style.color='black'"
+    >
+      Register</a
+    >
+  </div>
+  <div>
+    <a
+      (click)="ForgotPasswordAction()"
+      style="cursor: pointer"
+      onmouseover="this.style.color='blue'"
+      onmouseout="this.style.color='black'"
+    >
+      Forgot Password</a
+    >
+  </div>
+</div>

@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from '../services/snackbar.service';
 import { UserService } from '../services/user.service';
 import { GlobalConstants } from '../shared/global-constrants';
 import { SignupComponent } from '../signup/signup.component';
+import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
 
 @Component({
   selector: 'app-login',
@@ -20,13 +21,25 @@ export class LoginComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, private router: Router,
     private userServices: UserService, private snackbarservices: SnackbarService,
     private dialogRef: MatDialogRef<SignupComponent>,
-    private ngxService: NgxUiLoaderService) { }
+    private ngxService: NgxUiLoaderService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
    email: [null, [Validators.required, Validators.pattern(GlobalConstants.emailRegex)]],
    password: [null, [Validators.required]],
     })
+  }
+  ForgotPasswordAction() {
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = "500px";
+    this.dialog.open(ForgotPasswordComponent, dialogConfig);
+
+  }
+  signupAction() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = "500px";
+    this.dialog.open(SignupComponent, dialogConfig);
   }
   handleSubmit() {
     this.ngxService.start();
