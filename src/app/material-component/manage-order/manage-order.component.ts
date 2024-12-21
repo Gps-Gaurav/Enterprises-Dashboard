@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import * as saveAs from 'file-saver';
+import { saveAs } from 'file-saver';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { BillService } from 'src/app/services/bill.service';
 import { CategoryService } from 'src/app/services/category.service';
@@ -273,7 +273,7 @@ export class ManageOrderComponent implements OnInit {
       uuid: fileName
     }
     this.billService.getPdf(data).subscribe((response: any) => {
-      saveAs(response, fileName + '.pdf');;
+      saveAs(response, fileName + '.pdf');
       this.ngxServices.stop();
     })
   }
