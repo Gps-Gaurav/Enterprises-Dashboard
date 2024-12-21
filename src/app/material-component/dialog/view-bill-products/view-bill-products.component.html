@@ -1,51 +1,65 @@
 <mat-toolbar color="primary">
-<mat-toolbar-row fxlayout="row">
-  <span class="title-center">View Bills</span>
-  <span class="spacer"></span>
-  <button class="mat-dialog-close" mat-icon-button mat-dialog-close>
-    <mat-icon>cancel</mat-icon>
-  </button>
-</mat-toolbar-row>
+  <mat-toolbar-row fxLayout="row">
+    <span class="title-center">View Bill</span>
+    <span class="spacer"></span>
+    <button class="mat-dialog-close" mat-icon-button mat-dialog-close>
+      <mat-icon>cancel</mat-icon>
+    </button>
+  </mat-toolbar-row>
 </mat-toolbar>
+
 <mat-dialog-content class="mat-typography">
-  <table id="customers">
+  <!-- Customer Details -->
+  <table id="customers" *ngIf="data">
     <tr>
-      <td><b>Nane : </b>{{data.name}}</td>
-      <td><b>Email : </b>{{data.email}}</td>
+      <td><b>Name: </b>{{data.name || 'N/A'}}</td>
+      <td><b>Email: </b>{{data.email || 'N/A'}}</td>
     </tr>
     <tr>
-      <td><b>Contact Number : </b>{{data.contactNumber}}</td>
-      <td><b>Payment Method : </b>{{data.paymentMethod}}</td>
+      <td><b>Contact Number: </b>{{data.contactNumber || 'N/A'}}</td>
+      <td><b>Payment Method: </b>{{data.paymentMethod || 'N/A'}}</td>
     </tr>
   </table>
-  <div class="responsive_table">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
+  <!-- Products Table -->
+  <div class="responsive_table">
+    <div *ngIf="!hasData()" class="no-data-message">
+      No product details available
+    </div>
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="hasData()">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Name</th>
         <td mat-cell *matCellDef="let element">{{element.name}}</td>
       </ng-container>
+
       <ng-container matColumnDef="category">
         <th mat-header-cell *matHeaderCellDef>Category</th>
         <td mat-cell *matCellDef="let element">{{element.category}}</td>
       </ng-container>
+
       <ng-container matColumnDef="price">
         <th mat-header-cell *matHeaderCellDef>Price</th>
-        <td mat-cell *matCellDef="let element">{{element.price}}</td>
+        <td mat-cell *matCellDef="let element">{{formatPrice(element.price)}}</td>
       </ng-container>
+
       <ng-container matColumnDef="quantity">
         <th mat-header-cell *matHeaderCellDef>Quantity</th>
         <td mat-cell *matCellDef="let element">{{element.quantity}}</td>
       </ng-container>
+
       <ng-container matColumnDef="total">
         <th mat-header-cell *matHeaderCellDef>Total</th>
-        <td mat-cell *matCellDef="let element">{{element.total}}</td>
+        <td mat-cell *matCellDef="let element">{{formatPrice(element.total)}}</td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
-      <tr mat-row *matRowDef="let row; columns:displayedColumns; sticky:true"></tr>
-
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
+    <!-- Total Amount -->
+    <div class="total-section" *ngIf="hasData()">
+      <h3>Total Amount: {{formatPrice(getTotalAmount())}}</h3>
+    </div>
   </div>
 </mat-dialog-content>

@@ -1,51 +1,69 @@
 .mat-toolbar {
-    margin: -24px;
-    margin-bottom: 0;
-    width: auto;
-    margin-bottom: 10PX;
+  margin-bottom: 20px;
+}
+
+.title-center {
+  text-align: center;
+  font-weight: bold;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+#customers {
+  width: 100%;
+  margin-bottom: 20px;
+  border-collapse: collapse;
+
+  td {
+    padding: 12px;
+    border: 1px solid #ddd;
   }
-  
-  .title-center {
-      flex: 1 1 auto;
-      text-align: center;
-    }
-  
-    mat-form-field{
-        padding: 5px;
-    }
+}
 
-    .float-right{
-        float: right;
-    }
-    
-    mat-card{
-        padding: 20px;
-    }
-    
-    table {
-        width: 100%;
-      }
+.responsive_table {
+  margin-top: 20px;
+  overflow-x: auto;
 
+  .mat-table {
+    width: 100%;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
 
-      #customers {
-        font-family: Arial, Helvetica, sans-serif;
-        border-collapse: collapse;
-        width: 100%;
-      }
-      
-      #customers td, #customers th {
-        border: 1px solid #ddd;
-        padding: 8px;
-      }
-      
-      #customers tr:nth-child(even){background-color: #f2f2f2;}
-      
-      #customers tr:hover {background-color: #ddd;}
-      
-      #customers th {
-        padding-top: 12px;
-        padding-bottom: 12px;
-        text-align: left;
-        background-color: #04AA6D;
-        color: white;
-      }
+  .mat-header-cell {
+    font-weight: bold;
+    color: #000;
+    background-color: #f5f5f5;
+  }
+
+  .mat-cell, .mat-header-cell {
+    padding: 12px;
+    text-align: left;
+  }
+}
+
+.no-data-message {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
+
+.total-section {
+  margin-top: 20px;
+  text-align: right;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+
+  h3 {
+    margin: 0;
+    color: #333;
+  }
+}
+
+.mat-dialog-close {
+  color: white;
+}
