@@ -2,13 +2,12 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
-
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class BillService {
-  url = environment.apiUrl;
+  private url: string = environment.apiUrl;
 
   private headers = new HttpHeaders().set('Content-Type', 'application/json');
 

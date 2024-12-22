@@ -1,0 +1,23 @@
+# Development Dockerfile
+FROM node:14
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Install Angular CLI globally
+RUN npm install -g @angular/cli@14
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --force
+
+# Copy the rest of the application
+COPY . .
+
+# Expose port 4200
+EXPOSE 4200
+
+# Start Angular development server
+CMD ["ng", "serve", "--host", "--port", "4200"]
