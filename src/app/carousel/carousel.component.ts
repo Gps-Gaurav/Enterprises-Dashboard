@@ -29,7 +29,7 @@ export class CarouselComponent implements OnInit {
   carouselImages = [
     {
       url: 'https://picsum.photos/1920/600?random=1',
-      title: 'Welcome to Our Dashboard',
+      title: 'Welcome to Our Enterprises Dashboard',
       description: 'Manage and monitor your data efficiently'
     },
     {
@@ -40,6 +40,11 @@ export class CarouselComponent implements OnInit {
     {
       url: 'https://picsum.photos/1920/600?random=3',
       title: 'Comprehensive Reports',
+      description: 'Get detailed insights into your business'
+    },
+    {
+      url: 'https://picsum.photos/1920/600?random=4',
+      title: 'Generated Bills and Invoices',
       description: 'Get detailed insights into your business'
     }
   ];

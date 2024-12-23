@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BestSellerComponent } from './best-seller.component';
+import { BestSellerComponent } from './our-services.component';
 
 describe('BestSellerComponent', () => {
   let component: BestSellerComponent;
@@ -8,9 +8,8 @@ describe('BestSellerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ BestSellerComponent ]
-    })
-    .compileComponents();
+      declarations: [BestSellerComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
