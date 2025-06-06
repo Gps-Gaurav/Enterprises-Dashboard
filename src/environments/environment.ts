@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://enterprises-dashboard-api.vercel.app'  // Your development API URL
+  apiUrl: 'https://enterprises-dashboard-api.onrender.com'  // Your development API URL
 };
