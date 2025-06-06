@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080'  // Your development API URL
+  apiUrl: 'https://enterprises-dashboard-api-evg5.vercel.app'  // Your development API URL
 };
