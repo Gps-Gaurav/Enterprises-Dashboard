@@ -1,6 +1,6 @@
 # FRONTEND
 angular web-App dashboard with working all API link with backend project 
-<!-- Project live Link: "https://enterprises-dashboard-api.onrender.com/" -->
+Project live Link: "https://enterprises-dashboard-api.onrender.com/"
 
 # Enterprises Dashboard
 
@@ -37,7 +37,7 @@ This project is an enterprise-grade dashboard that provides a comprehensive inte
 
 ## Project Structure
 
-
+```
 src/
 ├── app/
 │   ├── components/
@@ -46,6 +46,13 @@ src/
 │   └── shared/
 ├── assets/
 └── styles/
+```
+
+## Development
+
+### Development server
+
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
 ### Build
 
@@ -65,3 +72,6 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 5. Open a Pull Request
 
 ## Contact
+
+Gaurav - [@Gps-Gaurav](https://github.com/Gps-Gaurav)
+
