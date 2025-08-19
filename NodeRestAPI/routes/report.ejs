@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { 
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .header {
+            margin-bottom: 20px;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: right;
+            padding: 10px;
+        }
+        .total-amount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Bill Details</h2>
+        <p>Date: <%= new Date().toLocaleString() %></p>
+        <p>Name: <%= name %></p>
+        <p>Email: <%= email %></p>
+        <p>Contact: <%= contactNumber %></p>
+        <p>Payment Method: <%= paymentMethod %></p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (Array.isArray(productDetails) && productDetails.length > 0) { %>
+                <% productDetails.forEach(function(product) { %>
+                    <tr>
+                        <td><%= product.name %></td>
+                        <td><%= product.category %></td>
+                        <td>₹<%= parseFloat(product.price).toFixed(2) %></td>
+                        <td><%= product.quantity %></td>
+                        <td>₹<%= parseFloat(product.total).toFixed(2) %></td>
+                    </tr>
+                <% }); %>
+            <% } %>
+        </tbody>
+    </table>
+    <div class="footer">
+        <% 
+        let calculatedTotal = 0;
+        if (Array.isArray(productDetails)) {
+            calculatedTotal = productDetails.reduce((sum, product) => {
+                return sum + (parseFloat(product.total) || 0);
+            }, 0);
+        }
+        const finalTotal = calculatedTotal;
+        %>
+        <div class="total-amount">
+
+            Total Amount: ₹<%= parseFloat(finalTotal).toFixed(2) %>
+        </div>
+    </div>
+    
+</body>
+</html>

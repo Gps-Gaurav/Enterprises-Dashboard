@@ -1,0 +1,7 @@
+runtime: nodejs14
+
+env: flex
+
+handlers:
+  - url: /.*
+    script: auto
