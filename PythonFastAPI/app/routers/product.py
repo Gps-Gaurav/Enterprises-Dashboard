@@ -157,26 +157,36 @@ async def update_product(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.delete("/delete/{id}")
+
+@router.delete("/delete/{product_id}")
 async def delete_product(
-    id: str,
+    product_id: str,
     db: AsyncIOMotorClient = Depends(get_database),
     user: dict = Depends(authenticate_token),
     _: bool = Depends(check_role),
 ):
     try:
+        # Validate ObjectId
         try:
-            obj_id = ObjectId(id)
+            obj_id = ObjectId(product_id)
         except bson_errors.InvalidId:
-            raise HTTPException(status_code=400, detail="Invalid product ID")
+            raise HTTPException(status_code=400, detail="Invalid product ID format")
 
+        # Check if product exists
+        product = await db.product.find_one({"_id": obj_id})
+        if not product:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Product with ID {product_id} does not exist or is invalid"
+            )
+
+        # Delete product
         result = await db.product.delete_one({"_id": obj_id})
-
-        if result.deleted_count == 0:
-            raise HTTPException(status_code=404, detail="Product ID does not exist")
 
         return {"message": "Product deleted successfully"}
 
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
