@@ -24,16 +24,17 @@ async def add_product(
 ):
     try:
         product_data = product.dict()
+
+        # Store categoryId as ObjectId for proper MongoDB lookups
+        product_data["categoryId"] = ObjectId(product_data["categoryId"])
+
         result = await db.product.insert_one(product_data)
         if result.inserted_id:
             return {"message": "Product added successfully"}
+        
         raise HTTPException(status_code=500, detail="Failed to add product")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-from bson import ObjectId
-
 @router.get("/get", response_model=list[ProductResponse])
 async def get_products(
     db: AsyncIOMotorClient = Depends(get_database),
@@ -81,8 +82,18 @@ async def get_products_by_category(
     user: dict = Depends(authenticate_token),
 ):
     try:
+        category_obj_id = ObjectId(id)
         pipeline = [
-            {"$match": {"categoryId": id, "status": True}},  # if stored as string
+            {"$match": {"categoryId": category_obj_id, "status": True}},
+            {
+                "$lookup": {
+                    "from": "category",
+                    "localField": "categoryId",
+                    "foreignField": "_id",
+                    "as": "category",
+                }
+            },
+            {"$unwind": "$category"},
             {
                 "$project": {
                     "_id": {"$toString": "$_id"},
@@ -90,7 +101,8 @@ async def get_products_by_category(
                     "description": 1,
                     "price": 1,
                     "status": 1,
-                    "categoryId": 1,
+                    "categoryId": {"$toString": "$category._id"},
+                    "categoryName": "$category.name",
                 }
             },
         ]
@@ -98,6 +110,7 @@ async def get_products_by_category(
         return products
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 
 @router.get("/getById/{id}", response_model=ProductResponse)
