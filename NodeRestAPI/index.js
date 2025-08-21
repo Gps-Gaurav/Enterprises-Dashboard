@@ -24,7 +24,7 @@ app.use('/product',productRoute);
 app.use('/bill',billRoute);
 app.use('/dashboard',dashboardRoute);
 
-app.use(express.static("Frontend"));
+// app.use(express.static("Frontend"));
 
 module.exports = app;
 

@@ -1,0 +1,26 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+weasyprint
+jinja2
+
+# MongoDB
+motor
+pymongo
+dnspython
+
+# Auth & Security
+passlib[bcrypt]
+bcrypt
+python-jose
+PyJWT
+
+# Utils
+python-decouple
+cloudinary
+email-validator
+
+# Optional (for docs & validation)
+pyyaml
+python-multipart
