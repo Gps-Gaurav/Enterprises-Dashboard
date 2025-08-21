@@ -14,7 +14,7 @@ async def get_dashboard_details(
     try:
         category_count = await db.category.count_documents({})
         product_count = await db.product.count_documents({})
-        bill_count = await db.bill.count_documents({})
+        bill_count = await db.bills.count_documents({})  # corrected collection name
 
         return DashboardResponse(
             category=category_count,

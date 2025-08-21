@@ -81,10 +81,20 @@ async def get_products_by_category(
     user: dict = Depends(authenticate_token),
 ):
     try:
-        products = await db.product.find(
-            {"categoryId": id, "status": True},
-            {"_id": {"$toString": "$_id"}, "name": 1, "categoryId": 1},
-        ).to_list(length=None)
+        pipeline = [
+            {"$match": {"categoryId": id, "status": True}},  # if stored as string
+            {
+                "$project": {
+                    "_id": {"$toString": "$_id"},
+                    "name": 1,
+                    "description": 1,
+                    "price": 1,
+                    "status": 1,
+                    "categoryId": 1,
+                }
+            },
+        ]
+        products = await db.product.aggregate(pipeline).to_list(length=None)
         return products
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -97,16 +107,15 @@ async def get_product_by_id(
     user: dict = Depends(authenticate_token),
 ):
     try:
-        product = await db.product.find_one(
-            {"_id": ObjectId(id)},
-            {"_id": {"$toString": "$_id"}, "name": 1, "description": 1, "price": 1},
-        )
+        product = await db.product.find_one({"_id": ObjectId(id)})
         if not product:
             raise HTTPException(status_code=404, detail="Product not found")
+        
+        # Convert _id to string manually
+        product["_id"] = str(product["_id"])
         return product
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.patch("/update")
 async def update_product(
@@ -116,13 +125,21 @@ async def update_product(
     _: bool = Depends(check_role),
 ):
     try:
+        try:
+            obj_id = ObjectId(product.id)
+        except bson_errors.InvalidId:
+            raise HTTPException(status_code=400, detail="Invalid product ID")
+
         result = await db.product.update_one(
-            {"_id": ObjectId(product.id)},
+            {"_id": obj_id},
             {"$set": product.dict(exclude={"id"})},
         )
+
         if result.matched_count == 0:
             raise HTTPException(status_code=404, detail="Product ID does not exist")
+
         return {"message": "Product updated successfully"}
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -135,10 +152,18 @@ async def delete_product(
     _: bool = Depends(check_role),
 ):
     try:
-        result = await db.product.delete_one({"_id": ObjectId(id)})
+        try:
+            obj_id = ObjectId(id)
+        except bson_errors.InvalidId:
+            raise HTTPException(status_code=400, detail="Invalid product ID")
+
+        result = await db.product.delete_one({"_id": obj_id})
+
         if result.deleted_count == 0:
             raise HTTPException(status_code=404, detail="Product ID does not exist")
+
         return {"message": "Product deleted successfully"}
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -151,11 +176,19 @@ async def update_status(
     _: bool = Depends(check_role),
 ):
     try:
+        try:
+            obj_id = ObjectId(data.id)
+        except bson_errors.InvalidId:
+            raise HTTPException(status_code=400, detail="Invalid product ID")
+
         result = await db.product.update_one(
-            {"_id": ObjectId(data.id)}, {"$set": {"status": data.status}}
+            {"_id": obj_id}, {"$set": {"status": data.status}}
         )
+
         if result.matched_count == 0:
             raise HTTPException(status_code=404, detail="Product ID does not exist")
+
         return {"message": "Product status updated successfully"}
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
