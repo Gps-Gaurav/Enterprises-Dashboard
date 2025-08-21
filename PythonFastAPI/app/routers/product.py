@@ -138,14 +138,19 @@ async def update_product(
     _: bool = Depends(check_role),
 ):
     try:
+        # Validate product ID
         try:
             obj_id = ObjectId(product.id)
         except bson_errors.InvalidId:
             raise HTTPException(status_code=400, detail="Invalid product ID")
 
+        # Prepare update data, exclude id field
+        update_data = product.dict(exclude={"id"})
+
+        # Update in MongoDB
         result = await db.product.update_one(
             {"_id": obj_id},
-            {"$set": product.dict(exclude={"id"})},
+            {"$set": update_data}
         )
 
         if result.matched_count == 0:
@@ -156,40 +161,31 @@ async def update_product(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-
-@router.delete("/delete/{product_id}")
+@router.delete("/delete/{id}")
 async def delete_product(
-    product_id: str,
+    id: str,
     db: AsyncIOMotorClient = Depends(get_database),
     user: dict = Depends(authenticate_token),
     _: bool = Depends(check_role),
 ):
     try:
-        # Validate ObjectId
+        # Convert string id to ObjectId
         try:
-            obj_id = ObjectId(product_id)
+            obj_id = ObjectId(id)
         except bson_errors.InvalidId:
-            raise HTTPException(status_code=400, detail="Invalid product ID format")
+            raise HTTPException(status_code=400, detail="Invalid product ID")
 
-        # Check if product exists
-        product = await db.product.find_one({"_id": obj_id})
-        if not product:
-            raise HTTPException(
-                status_code=404,
-                detail=f"Product with ID {product_id} does not exist or is invalid"
-            )
-
-        # Delete product
+        # Delete from MongoDB
         result = await db.product.delete_one({"_id": obj_id})
+
+        # Check if product existed
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Product ID does not exist")
 
         return {"message": "Product deleted successfully"}
 
-    except HTTPException:
-        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.patch("/updateStatus")
 async def update_status(
