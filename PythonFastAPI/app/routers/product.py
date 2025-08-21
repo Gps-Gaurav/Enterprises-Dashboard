@@ -10,10 +10,10 @@ from app.schemas.product import (
     ProductResponse,
 )
 
-from bson import ObjectId
+from bson import ObjectId, errors as bson_errors
+
 
 router = APIRouter()
-
 
 @router.post("/add")
 async def add_product(
@@ -22,19 +22,29 @@ async def add_product(
     user: dict = Depends(authenticate_token),
     _: bool = Depends(check_role),
 ):
+    product_data = product.dict()
+
+    # Remove productId if present; backend will assign it
+    product_data.pop("productId", None)
+
+    # Convert categoryId to ObjectId for MongoDB
     try:
-        product_data = product.dict()
-
-        # Store categoryId as ObjectId for proper MongoDB lookups
         product_data["categoryId"] = ObjectId(product_data["categoryId"])
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid category ID")
 
-        result = await db.product.insert_one(product_data)
-        if result.inserted_id:
-            return {"message": "Product added successfully"}
-        
-        raise HTTPException(status_code=500, detail="Failed to add product")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    # Auto-generate numeric productId
+    last_product = await db.product.find_one(sort=[("productId", -1)])
+    product_data["productId"] = (last_product["productId"] + 1) if last_product else 1
+
+    result = await db.product.insert_one(product_data)
+
+    return {
+        "message": "Product added successfully",
+        "_id": str(result.inserted_id),
+        "productId": product_data["productId"]
+    }
+
 @router.get("/get", response_model=list[ProductResponse])
 async def get_products(
     db: AsyncIOMotorClient = Depends(get_database),
@@ -130,6 +140,7 @@ async def get_product_by_id(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.patch("/update")
 async def update_product(
     product: ProductUpdate,
@@ -137,29 +148,33 @@ async def update_product(
     user: dict = Depends(authenticate_token),
     _: bool = Depends(check_role),
 ):
+    # Validate product ID
+    if not product.id or product.id == "undefined":
+        raise HTTPException(status_code=400, detail="Product ID is required")
+
     try:
-        # Validate product ID
-        try:
-            obj_id = ObjectId(product.id)
-        except bson_errors.InvalidId:
-            raise HTTPException(status_code=400, detail="Invalid product ID")
+        obj_id = ObjectId(product.id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid product ID")
 
-        # Prepare update data, exclude id field
-        update_data = product.dict(exclude={"id"})
+    # Prepare update data (exclude ID)
+    update_data = product.dict(exclude={"id"})
+    # Convert categoryId to string if exists
+    if "categoryId" in update_data and update_data["categoryId"]:
+        update_data["categoryId"] = str(update_data["categoryId"])
 
-        # Update in MongoDB
+    try:
         result = await db.product.update_one(
             {"_id": obj_id},
             {"$set": update_data}
         )
-
         if result.matched_count == 0:
             raise HTTPException(status_code=404, detail="Product ID does not exist")
 
         return {"message": "Product updated successfully"}
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
 
 @router.delete("/delete/{id}")
 async def delete_product(
@@ -168,24 +183,23 @@ async def delete_product(
     user: dict = Depends(authenticate_token),
     _: bool = Depends(check_role),
 ):
+    if not id or id == "undefined":
+        raise HTTPException(status_code=400, detail="Product ID is required")
+
+    # Try ObjectId first
     try:
-        # Convert string id to ObjectId
+        filter_query = {"_id": ObjectId(id)}
+    except bson_errors.InvalidId:
+        # Fallback to numeric productId
         try:
-            obj_id = ObjectId(id)
-        except bson_errors.InvalidId:
+            filter_query = {"productId": int(id)}
+        except ValueError:
             raise HTTPException(status_code=400, detail="Invalid product ID")
 
-        # Delete from MongoDB
-        result = await db.product.delete_one({"_id": obj_id})
-
-        # Check if product existed
-        if result.deleted_count == 0:
-            raise HTTPException(status_code=404, detail="Product ID does not exist")
-
-        return {"message": "Product deleted successfully"}
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    result = await db.product.delete_one(filter_query)
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Product ID does not exist")
+    return {"message": "Product deleted successfully"}
 
 @router.patch("/updateStatus")
 async def update_status(
