@@ -19,8 +19,8 @@ export class ManageProductComponent implements OnInit {
   dataSource: any;
   responseMessage: any;
 
-
-  constructor(private productServices: ProductService,
+  constructor(
+    private productServices: ProductService,
     private ngxServices: NgxUiLoaderService,
     private dialog: MatDialog,
     private snackbarServices: SnackbarService,
@@ -28,25 +28,34 @@ export class ManageProductComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.ngxServices.start()
-    this.tableData()
+    this.ngxServices.start();
+    this.loadTableData();
   }
-  tableData() {
-    this.productServices.getProducts().subscribe((response: any) => {
-      this.ngxServices.stop();
-      this.dataSource = new MatTableDataSource(response);
-    }, (error: any) => {
-      this.ngxServices.stop();
-      if (error.error?.message) {
-        this.responseMessage = error.error?.message;
 
-      } else {
-        this.responseMessage = GlobalConstants.genericError;
-
+  loadTableData() {
+    this.productServices.getProducts().subscribe(
+      (response: any) => {
+        this.ngxServices.stop();
+        // Ensure all required fields are present
+        this.dataSource = new MatTableDataSource(
+          response.map((p: any) => ({
+            _id: p._id,
+            productId: p.productId,
+            name: p.name,
+            description: p.description,
+            price: p.price,
+            status: p.status,
+            categoryId: p.categoryId,
+            categoryName: p.categoryName // for display
+          }))
+        );
+      },
+      (error: any) => {
+        this.ngxServices.stop();
+        this.responseMessage = error.error?.message || GlobalConstants.genericError;
+        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
       }
-      this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
-    })
-
+    );
   }
 
   applyFilter(event: Event) {
@@ -54,96 +63,93 @@ export class ManageProductComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-
   handleAddAction() {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {
-      action: 'Add'
-    }
-    dialogConfig.width = "850px";
-    const dialogRef = this.dialog.open(ProductComponent, dialogConfig);
-    this.router.events.subscribe(() => {
-      dialogRef.close();
+    dialogConfig.data = { action: 'Add' };
+    dialogConfig.width = '850px';
 
+    const dialogRef = this.dialog.open(ProductComponent, dialogConfig);
+
+    const sub = dialogRef.componentInstance.onAddProduct.subscribe(() => {
+      this.loadTableData();
+      sub.unsubscribe();
     });
-    const sub = dialogRef.componentInstance.onAddProduct.subscribe((response) => {
-      this.tableData()
-    })
+
+    this.router.events.subscribe(() => dialogRef.close());
   }
 
   handleEditAction(values: any) {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {
-      action: 'Edit',
-      data: values
-    }
-    dialogConfig.width = "850px";
-    const dialogRef = this.dialog.open(ProductComponent, dialogConfig);
-    this.router.events.subscribe(() => {
-      dialogRef.close();
+  // Fetch the full product details first
+  this.productServices.getById(values._id).subscribe(
+    (product: any) => {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = { action: 'Edit', data: product };
+      dialogConfig.width = '850px';
 
-    });
-    const sub = dialogRef.componentInstance.onEditProduct.subscribe((response) => {
-      this.tableData()
-    })
-  }
+      const dialogRef = this.dialog.open(ProductComponent, dialogConfig);
+
+      const sub = dialogRef.componentInstance.onEditProduct.subscribe(() => {
+        this.loadTableData();
+        sub.unsubscribe();
+      });
+
+      this.router.events.subscribe(() => dialogRef.close());
+    },
+    (error: any) => {
+      this.snackbarServices.openSnackbar('Failed to fetch product details', GlobalConstants.error);
+    }
+  );
+}
 
 
   handleDeleteAction(values: any) {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {
-      message: 'delete' + values.name + 'product'
-    }
+    dialogConfig.data = { message: `Delete ${values.name} product?` };
+
     const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
-    const sub = dialogRef.componentInstance.onEmitStatuschange.subscribe((response) => {
+
+    const sub = dialogRef.componentInstance.onEmitStatuschange.subscribe(() => {
+      if (!values._id) {
+        this.snackbarServices.openSnackbar('Product ID missing', GlobalConstants.error);
+        dialogRef.close();
+        return;
+      }
       this.ngxServices.start();
-      this.deleteProduct(values.id)
+      this.deleteProduct(values._id);
       dialogRef.close();
-    })
+      sub.unsubscribe();
+    });
   }
 
   deleteProduct(id: any) {
-    this.productServices.delete(id).subscribe((response: any) => {
-      this.ngxServices.stop();
-      this.tableData();
-      this.responseMessage = response?.message;
-      this.snackbarServices.openSnackbar(this.responseMessage, "success");
-    }
-      , (error: any) => {
+    this.productServices.delete(id).subscribe(
+      (response: any) => {
         this.ngxServices.stop();
-        if (error.error?.message) {
-          this.responseMessage = error.error?.message;
-
-        } else {
-          this.responseMessage = GlobalConstants.genericError;
-
-        }
+        this.loadTableData();
+        this.responseMessage = response?.message;
+        this.snackbarServices.openSnackbar(this.responseMessage, 'success');
+      },
+      (error: any) => {
+        this.ngxServices.stop();
+        this.responseMessage = error.error?.message || GlobalConstants.genericError;
         this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
-      })
-
-
-  }
-  onChange(status: any, id: any) {
-    var data = {
-      status: status.toString(),
-      id: id
-    }
-    this.productServices.updateStatus(data).subscribe((response: any) => {
-      this.ngxServices.stop();
-      this.responseMessage = response?.message;
-      this.snackbarServices.openSnackbar(this.responseMessage, "success");
-
-    }, (error: any) => {
-      this.ngxServices.stop();
-      if (error.error?.message) {
-        this.responseMessage = error.error?.message;
-
-      } else {
-        this.responseMessage = GlobalConstants.genericError;
-
       }
-      this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
-    })
+    );
   }
 
+  onChange(status: any, id: any) {
+    const data = { status: status.toString(), id: id };
+    this.productServices.updateStatus(data).subscribe(
+      (response: any) => {
+        this.ngxServices.stop();
+        this.responseMessage = response?.message;
+        this.snackbarServices.openSnackbar(this.responseMessage, 'success');
+      },
+      (error: any) => {
+        this.ngxServices.stop();
+        this.responseMessage = error.error?.message || GlobalConstants.genericError;
+        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
+      }
+    );
+  }
 }

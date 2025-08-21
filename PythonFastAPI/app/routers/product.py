@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from motor.motor_asyncio import AsyncIOMotorClient
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from config.db import get_database
 from app.services.authentication import authenticate_token
 from app.services.check_role import check_role
@@ -126,20 +126,26 @@ async def get_products_by_category(
 @router.get("/getById/{id}", response_model=ProductResponse)
 async def get_product_by_id(
     id: str,
-    db: AsyncIOMotorClient = Depends(get_database),
+    db: AsyncIOMotorDatabase = Depends(get_database),
     user: dict = Depends(authenticate_token),
 ):
-    try:
-        product = await db.product.find_one({"_id": ObjectId(id)})
-        if not product:
-            raise HTTPException(status_code=404, detail="Product not found")
-        
-        # Convert _id to string manually
-        product["_id"] = str(product["_id"])
-        return product
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    if not id or id == "undefined":
+        raise HTTPException(status_code=400, detail="Product ID is required")
 
+    try:
+        oid = ObjectId(id)
+    except bson_errors.InvalidId:
+        raise HTTPException(status_code=400, detail="Invalid ObjectId format")
+
+    product = await db["product"].find_one({"_id": oid})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    # Convert ObjectId fields to string
+    product["_id"] = str(product["_id"])
+    product["categoryId"] = str(product["categoryId"])  # <-- fix here
+
+    return product
 
 @router.patch("/update")
 async def update_product(
