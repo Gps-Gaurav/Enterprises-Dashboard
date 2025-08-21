@@ -32,6 +32,8 @@ async def add_product(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+from bson import ObjectId
+
 @router.get("/get", response_model=list[ProductResponse])
 async def get_products(
     db: AsyncIOMotorClient = Depends(get_database),
@@ -39,10 +41,16 @@ async def get_products(
 ):
     try:
         pipeline = [
+            # Convert categoryId from string to ObjectId for lookup
+            {
+                "$addFields": {
+                    "categoryObjId": {"$toObjectId": "$categoryId"}
+                }
+            },
             {
                 "$lookup": {
                     "from": "category",
-                    "localField": "categoryId",
+                    "localField": "categoryObjId",
                     "foreignField": "_id",
                     "as": "category",
                 }
