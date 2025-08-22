@@ -1,44 +1,66 @@
-/* You can add global styles to this file, and also import other style files */
+@import './custom-theme.scss'; // Import your theme first
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* Preloader */
+.preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
-  //responsibe table
-  @media(max-width: 800px) {
-    .responsive_table {
-        overflow-x: auto !important;
-    }
-  
-    .mat-table {
-        min-width:800px;
-    }
-  }
-  
-  .mat-row {
-    height: auto;
-  }
-  
-  .mat-header-cell,.mat-cell {
-    text-align: center !important;
-    padding: 0px 8px 0px 15px !important;
-  }
+.spinner {
+  width: 40px;
+  height: 40px;
+  position: relative;
+}
 
-  .black-snackbar {
-    background: black !important;
-    color: white !important;
-  }
+.double-bounce1,
+.double-bounce2 {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #1976d2; /* Force blue */
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: sk-bounce 2s infinite ease-in-out;
+}
 
-  .green-snackbar {
-    background: #32CD32 !important;
-    color: white !important;
-  }
+.double-bounce2 {
+  animation-delay: -1s;
+}
 
-  .mat-snack-bar-container {
-    margin-right: auto !important;
-    margin-left: auto !important;
-    width: 40vw !important;
-    min-width: 90% !important;
-    max-width: 100vw !important;
-    margin-top: 70px !important;
-    padding: 20px !important;
+@keyframes sk-bounce {
+  0%, 100% { transform: scale(0); }
+  50% { transform: scale(1); }
+}
+
+/* Force all Material progress bars and spinners to blue */
+.mat-progress-bar .mat-progress-bar-fill::after,
+.mat-progress-spinner circle {
+  background-color: #1976d2 !important;
+  stroke: #1976d2 !important;
+}
+/* Force all Material spinners to blue (#1976d2) */
+.mat-progress-spinner circle,
+.mat-spinner circle {
+  stroke: #1976d2 !important; /* Material Blue 700 */
+}
+
+/* Progress bars always blue */
+.mat-progress-bar.mat-primary .mat-progress-bar-fill::after,
+.mat-progress-bar.mat-accent .mat-progress-bar-fill::after,
+.mat-progress-bar.mat-warn .mat-progress-bar-fill::after {
+  background-color: #1976d2 !important;
+}
+
+/* Buffer track (background) slightly lighter */
+.mat-progress-bar .mat-progress-bar-buffer {
+  background-color: rgba(25, 118, 210, 0.3) !important;
 }

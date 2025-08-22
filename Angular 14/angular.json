@@ -33,9 +33,6 @@
               "src/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
-              "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
-              "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css",
               "src/styles.scss",
               "src/assets/styles/style.scss",
               "src/custom-theme.scss"
@@ -63,7 +60,7 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-             "budgets": [
+              "budgets": [
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
@@ -108,11 +105,9 @@
               "src/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
-              "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css",
               "src/styles.scss",
-              "src/styles/custom-theme.scss"
+              "src/assets/styles/style.scss",
+              "src/custom-theme.scss"
             ],
             "scripts": []
           }

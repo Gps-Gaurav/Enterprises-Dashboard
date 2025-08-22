@@ -1,6 +1,5 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { DashboardService } from '../services/dashboard.service';
-import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from '../services/snackbar.service';
 import { GlobalConstants } from '../shared/global-constrants';
 
@@ -12,36 +11,32 @@ import { GlobalConstants } from '../shared/global-constrants';
 export class DashboardComponent implements AfterViewInit {
   responseMessage: any;
   data: any;
+  stats: any[] = [];
 
-  ngAfterViewInit() { }
+  constructor(
+    private dashboardServices: DashboardService,
+    private snackbarServices: SnackbarService
+  ) { }
 
-  constructor(private dashboardServices: DashboardService,
-    private ngxServices: NgxUiLoaderService,
-    private snackbarServices: SnackbarService) {
-
-    this.ngxServices.start();
-    this.dashboardData();
-
+  ngAfterViewInit() {
+    this.loadDashboardData();
   }
 
-  dashboardData() {
-    this.dashboardServices.getDetails().subscribe((response: any) => {
-      this.ngxServices.stop();
-      this.data = response;
-
-    },(error: any) => {
-      this.ngxServices.stop();
-      console.error(error);
-      if(error.error?.message){
-      this.responseMessage = error.error?.message;
+  loadDashboardData() {
+    this.dashboardServices.getDetails().subscribe(
+      (response: any) => {
+        this.data = response;
+        this.stats = [
+          { title: 'Category', value: this.data?.category, link: '/cafe/view-category', color: '#2196f3' },
+          { title: 'Product', value: this.data?.product, link: '/cafe/view-product', color: '#1e88e5' },
+          { title: 'Bill', value: this.data?.bill, link: '/cafe/bill', color: '#028ee1' }
+        ];
+      },
+      (error: any) => {
+        console.error(error);
+        this.responseMessage = error.error?.message || GlobalConstants.genericError;
+        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
       }
-      else{
-        this.responseMessage = GlobalConstants.genericError;
-      }
-      this.snackbarServices.openSnackbar(this.responseMessage,GlobalConstants.error);
-      
-    }
-    )
+    );
   }
-
 }

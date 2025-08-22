@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ProductService } from 'src/app/services/product.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { GlobalConstants } from 'src/app/shared/global-constrants';
@@ -21,22 +20,18 @@ export class ManageProductComponent implements OnInit {
 
   constructor(
     private productServices: ProductService,
-    private ngxServices: NgxUiLoaderService,
     private dialog: MatDialog,
     private snackbarServices: SnackbarService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.ngxServices.start();
     this.loadTableData();
   }
 
   loadTableData() {
     this.productServices.getProducts().subscribe(
       (response: any) => {
-        this.ngxServices.stop();
-        // Ensure all required fields are present
         this.dataSource = new MatTableDataSource(
           response.map((p: any) => ({
             _id: p._id,
@@ -46,12 +41,11 @@ export class ManageProductComponent implements OnInit {
             price: p.price,
             status: p.status,
             categoryId: p.categoryId,
-            categoryName: p.categoryName // for display
+            categoryName: p.categoryName
           }))
         );
       },
       (error: any) => {
-        this.ngxServices.stop();
         this.responseMessage = error.error?.message || GlobalConstants.genericError;
         this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
       }
@@ -69,7 +63,6 @@ export class ManageProductComponent implements OnInit {
     dialogConfig.width = '850px';
 
     const dialogRef = this.dialog.open(ProductComponent, dialogConfig);
-
     const sub = dialogRef.componentInstance.onAddProduct.subscribe(() => {
       this.loadTableData();
       sub.unsubscribe();
@@ -79,42 +72,37 @@ export class ManageProductComponent implements OnInit {
   }
 
   handleEditAction(values: any) {
-  // Fetch the full product details first
-  this.productServices.getById(values._id).subscribe(
-    (product: any) => {
-      const dialogConfig = new MatDialogConfig();
-      dialogConfig.data = { action: 'Edit', data: product };
-      dialogConfig.width = '850px';
+    this.productServices.getById(values._id).subscribe(
+      (product: any) => {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = { action: 'Edit', data: product };
+        dialogConfig.width = '850px';
 
-      const dialogRef = this.dialog.open(ProductComponent, dialogConfig);
+        const dialogRef = this.dialog.open(ProductComponent, dialogConfig);
+        const sub = dialogRef.componentInstance.onEditProduct.subscribe(() => {
+          this.loadTableData();
+          sub.unsubscribe();
+        });
 
-      const sub = dialogRef.componentInstance.onEditProduct.subscribe(() => {
-        this.loadTableData();
-        sub.unsubscribe();
-      });
-
-      this.router.events.subscribe(() => dialogRef.close());
-    },
-    (error: any) => {
-      this.snackbarServices.openSnackbar('Failed to fetch product details', GlobalConstants.error);
-    }
-  );
-}
-
+        this.router.events.subscribe(() => dialogRef.close());
+      },
+      () => {
+        this.snackbarServices.openSnackbar('Failed to fetch product details', GlobalConstants.error);
+      }
+    );
+  }
 
   handleDeleteAction(values: any) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = { message: `Delete ${values.name} product?` };
 
     const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
-
     const sub = dialogRef.componentInstance.onEmitStatuschange.subscribe(() => {
       if (!values._id) {
         this.snackbarServices.openSnackbar('Product ID missing', GlobalConstants.error);
         dialogRef.close();
         return;
       }
-      this.ngxServices.start();
       this.deleteProduct(values._id);
       dialogRef.close();
       sub.unsubscribe();
@@ -124,13 +112,11 @@ export class ManageProductComponent implements OnInit {
   deleteProduct(id: any) {
     this.productServices.delete(id).subscribe(
       (response: any) => {
-        this.ngxServices.stop();
         this.loadTableData();
         this.responseMessage = response?.message;
         this.snackbarServices.openSnackbar(this.responseMessage, 'success');
       },
       (error: any) => {
-        this.ngxServices.stop();
         this.responseMessage = error.error?.message || GlobalConstants.genericError;
         this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
       }
@@ -141,12 +127,10 @@ export class ManageProductComponent implements OnInit {
     const data = { status: status.toString(), id: id };
     this.productServices.updateStatus(data).subscribe(
       (response: any) => {
-        this.ngxServices.stop();
         this.responseMessage = response?.message;
         this.snackbarServices.openSnackbar(this.responseMessage, 'success');
       },
       (error: any) => {
-        this.ngxServices.stop();
         this.responseMessage = error.error?.message || GlobalConstants.genericError;
         this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
       }

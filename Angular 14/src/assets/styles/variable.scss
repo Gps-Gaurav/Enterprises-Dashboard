@@ -1,42 +1,27 @@
-/*
-Template Name: Material Pro Admin
-Author: Themedesigner
-Email: niravjoshi87@gmail.com
-File: scss
-*/
-// Variables
-// @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700');
-
 $bodyfont: 'Poppins', sans-serif;
 $headingfont: 'Poppins', sans-serif;
 
 @import '~@angular/material/theming';
 
-/*Material Theme Colors*/
+// ------------------- Material Theme -------------------
+$primary: mat-palette($mat-blue, 600);  // Primary = Blue
+$accent: mat-palette($mat-blue, 500);   // Accent = Blue
+$warn: mat-palette($mat-red, 500);      // Warn = Red
 
-$primary: mat-palette($mat-red, 600);
-$accent: mat-palette($mat-red, 500);
-$warn: mat-palette($mat-red, 500);
 $theme: mat-light-theme($primary, $accent, $warn);
-$background: map-get($theme, background);
-$foreground: map-get($theme, foreground);
 
 @include mat-core();
 
+// Custom Typography
 $custom-typography: mat-typography-config(
   $font-family: 'Poppins, sans-serif'
 );
-
-// Override the typography in the core CSS.
 @include mat-core($custom-typography);
 
-// Default Theme
+// Apply Theme
 @include angular-material-theme($theme);
 
-// Dark Theme
-
-/*Theme Colors*/
-
+// ------------------- Custom Colors -------------------
 $topbar: #2196f3;
 $sidebar: #fff;
 $sidebar-white: #e5edef;
@@ -51,16 +36,15 @@ $font-16: 16px;
 
 $light-text: #a6b7bf;
 $themecolor: #1e88e5;
-$themecolor-alt: #e53935;
+$themecolor-alt: #35a1e5;
 $themecolor-dark: #028ee1;
 
-/*bootstrap Color*/
+// Bootstrap Colors
 $danger: #fc4b6c;
 $success: #26c6da;
-$warning: #ffb22b;
-$primary: #7460ee;
+$warning: #2b5dff;
+$primary: #7460ee;  // your custom primary (for non-Material use)
 $info: #1e88e5;
-// $inverse: #2f3d4a;
 $inverse: white;
 $muted: #99abb4;
 $dark: #263238;
@@ -68,7 +52,7 @@ $light: #f2f4f8;
 $extra-light: #ebf3f5;
 $secondary: #727b84;
 
-/*Light colors*/
+// Light Colors
 $light-danger: #f9e7eb;
 $light-success: #e8fdf8;
 $light-warning: #fff8ec;
@@ -77,24 +61,25 @@ $light-info: #e3f3fd;
 $light-inverse: #f6f6f6;
 $light-megna: #e0f2f4;
 
+// Dark Colors
 $danger-dark: #e6294b;
 $success-dark: #1eacbe;
 $warning-dark: #e9ab2e;
 $primary-dark: #6352ce;
 $info-dark: #028ee1;
-$red-dark: #d61f1f;
+$red-dark: #1f5fd6;
 $inverse-dark: #232a37;
 $dark-transparent: rgba(0, 0, 0, 0.05);
 
-/*Normal Color*/
+// Normal Colors
 $white: #ffffff;
-$red: #fb3a3a;
+$red: #3a4afb;
 $yellow: #a0aec4;
 $purple: #7460ee;
 $blue: #02bec9;
 $megna: #00897b;
 
-/*Extra Variable*/
+// Extra Variables
 $rgt: right;
 $lft: left;
 $border: rgba(120, 130, 140, 0.13);

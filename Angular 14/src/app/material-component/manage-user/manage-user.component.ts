@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { UserService } from 'src/app/services/user.service';
 import { GlobalConstants } from 'src/app/shared/global-constrants';
@@ -18,34 +17,27 @@ export class ManageUserComponent implements OnInit {
   dataSource: any;
   responseMessage: any;
 
-
-  constructor(private userServices: UserService,
-    private ngxServices: NgxUiLoaderService,
+  constructor(
+    private userServices: UserService,
     private dialog: MatDialog,
     private snackbarServices: SnackbarService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.ngxServices.start()
-    this.tableData()
+    this.tableData();
   }
+
   tableData() {
-    this.userServices.getUser().subscribe((response: any) => {
-      this.ngxServices.stop();
-      this.dataSource = new MatTableDataSource(response);
-    }, (error: any) => {
-      this.ngxServices.stop();
-      if (error.error?.message) {
-        this.responseMessage = error.error?.message;
-
-      } else {
-        this.responseMessage = GlobalConstants.genericError;
-
+    this.userServices.getUser().subscribe(
+      (response: any) => {
+        this.dataSource = new MatTableDataSource(response);
+      },
+      (error: any) => {
+        this.responseMessage = error.error?.message || GlobalConstants.genericError;
+        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
       }
-      this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
-    })
-
+    );
   }
 
   applyFilter(event: Event) {
@@ -53,26 +45,18 @@ export class ManageUserComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
- handleChangeAction(status: any, id: any) {
-    var data = {
-      status: status.toString(),
-      id: id
-    }
-    this.userServices.update(data).subscribe((response: any) => {
-      this.ngxServices.stop();
-      this.responseMessage = response?.message;
-      this.snackbarServices.openSnackbar(this.responseMessage, "success");
-
-    }, (error: any) => {
-      this.ngxServices.stop();
-      if (error.error?.message) {
-        this.responseMessage = error.error?.message;
-
-      } else {
-        this.responseMessage = GlobalConstants.genericError;
-
+  handleChangeAction(status: any, id: any) {
+    const data = { status: status.toString(), id: id };
+    this.userServices.update(data).subscribe(
+      (response: any) => {
+        this.responseMessage = response?.message;
+        this.snackbarServices.openSnackbar(this.responseMessage, "success");
+        this.tableData(); // refresh table after status change
+      },
+      (error: any) => {
+        this.responseMessage = error.error?.message || GlobalConstants.genericError;
+        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
       }
-      this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
-    })
+    );
   }
 }

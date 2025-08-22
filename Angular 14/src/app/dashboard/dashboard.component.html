@@ -1,38 +1,15 @@
-<body>
-  <mat-card>
-    <b><span>Enterprises Dashboaard</span></b>
-  </mat-card>
-  <hr>
-  <br>
-  <div class="row">
-    <div class="column">
-      <div class="card">
-        <div class="container">
-          <h2 class="title">Total Category</h2>
-          <h1 class="title">{{data?.category}}</h1>
-          <p><button class="button" routerLink="/cafe/view-category">View Category </button></p>
-        </div>
-      </div>
+<mat-card class="dashboard-header">
+  <h1>Dashboard</h1>
+</mat-card>
+
+<div class="cards-container">
+  <div class="card" *ngFor="let item of stats" [style.border-top-color]="item.color">
+    <div class="card-content">
+      <h3>{{item.title}}</h3>
+      <h2>{{item.value}}</h2>
+      <button mat-raised-button color="primary" [routerLink]="item.link">
+        View {{item.title}}
+      </button>
     </div>
-      <div class="column">
-        <div class="card">
-          <div class="container">
-            <h2 class="title">Total Product</h2>
-            <h1 class="title">{{data?.product}}</h1>
-            <p><button class="button" routerLink="/cafe/view-product">View Product </button></p>
-          </div>
-        </div>
-      </div>
-
-        <div class="column">
-          <div class="card">
-            <div class="container">
-              <h2 class="title">Total Bill</h2>
-              <h1 class="title">{{data?.bill}}</h1>
-              <p><button class="button" routerLink="/cafe/bill">View Bill </button></p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-</body>
+  </div>
+</div>

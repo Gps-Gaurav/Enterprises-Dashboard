@@ -1,18 +1,22 @@
 @import '~@angular/material/theming';
+
+// Include Angular Material core styles
 @include mat-core();
 
+// Define palettes
 $primary: mat-palette($mat-blue);
 $accent: mat-palette($mat-amber, A200, A100, A400);
-$warn: mat-palette($mat-red);
+$warn: mat-palette($mat-blue); // Force warn to blue
 
-$theme: mat-light-theme(
-  (
-    color: (
-      primary: $primary,
-      accent: $accent,
-      warn: $warn,
-    ),
-  )
-);
+// Create light theme
+$custom-theme: mat-light-theme((
+  color: (
+    primary: $primary,
+    accent: $accent,
+    warn: $warn
+  ),
+  typography: mat-typography-config()
+));
 
-@include angular-material-theme($theme);
+// Apply the theme
+@include angular-material-theme($custom-theme);
