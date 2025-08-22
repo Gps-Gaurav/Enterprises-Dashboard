@@ -71,26 +71,33 @@ export class ManageProductComponent implements OnInit {
     this.router.events.subscribe(() => dialogRef.close());
   }
 
-  handleEditAction(values: any) {
-    this.productServices.getById(values._id).subscribe(
-      (product: any) => {
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.data = { action: 'Edit', data: product };
-        dialogConfig.width = '850px';
-
-        const dialogRef = this.dialog.open(ProductComponent, dialogConfig);
-        const sub = dialogRef.componentInstance.onEditProduct.subscribe(() => {
-          this.loadTableData();
-          sub.unsubscribe();
-        });
-
-        this.router.events.subscribe(() => dialogRef.close());
-      },
-      () => {
-        this.snackbarServices.openSnackbar('Failed to fetch product details', GlobalConstants.error);
-      }
-    );
+handleEditAction(values: any) {
+  if (!values._id) {
+    this.snackbarServices.openSnackbar('Product ID missing', GlobalConstants.error);
+    return;
   }
+
+  this.productServices.getById(values._id).subscribe(
+    (product: any) => {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = { action: 'Edit', data: product };
+      dialogConfig.width = '850px';
+
+      const dialogRef = this.dialog.open(ProductComponent, dialogConfig);
+
+      const sub = dialogRef.componentInstance.onEditProduct.subscribe(() => {
+        this.loadTableData();
+        sub.unsubscribe();
+      });
+
+      this.router.events.subscribe(() => dialogRef.close());
+    },
+    () => {
+      this.snackbarServices.openSnackbar('Failed to fetch product details', GlobalConstants.error);
+    }
+  );
+}
+
 
   handleDeleteAction(values: any) {
     const dialogConfig = new MatDialogConfig();

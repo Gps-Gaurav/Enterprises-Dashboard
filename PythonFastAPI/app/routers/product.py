@@ -163,25 +163,30 @@ async def update_product(
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid product ID")
 
-    # Prepare update data (exclude ID)
     update_data = product.dict(exclude={"id"})
-    # Convert categoryId to string if exists
+
+    # Convert categoryId to ObjectId if provided
     if "categoryId" in update_data and update_data["categoryId"]:
-        update_data["categoryId"] = str(update_data["categoryId"])
+        try:
+            update_data["categoryId"] = ObjectId(update_data["categoryId"])
+        except Exception:
+            raise HTTPException(status_code=400, detail="Invalid category ID")
 
-    try:
-        result = await db.product.update_one(
-            {"_id": obj_id},
-            {"$set": update_data}
-        )
-        if result.matched_count == 0:
-            raise HTTPException(status_code=404, detail="Product ID does not exist")
+    # Update the product
+    result = await db.product.update_one({"_id": obj_id}, {"$set": update_data})
 
-        return {"message": "Product updated successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Product not found")
 
+    # Return updated product (optional: fetch from DB to include all fields)
+    updated_product = await db.product.find_one({"_id": obj_id})
+    updated_product["_id"] = str(updated_product["_id"])
+    updated_product["categoryId"] = str(updated_product["categoryId"])
+
+    return {
+        "message": "Product updated successfully",
+        "product": updated_product
+    }
 @router.delete("/delete/{id}")
 async def delete_product(
     id: str,

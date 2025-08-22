@@ -15,12 +15,11 @@ class ProductCreate(ProductBase):
 
 class ProductUpdate(BaseModel):
     id: str
-    name: str
-    categoryId: str
+    name: Optional[str] = None
+    categoryId: Optional[str] = None
     description: Optional[str] = None
-    price: float
-
-
+    price: Optional[float] = None
+    
 class ProductUpdateStatus(BaseModel):
     id: str
     status: bool

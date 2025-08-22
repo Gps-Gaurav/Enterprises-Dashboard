@@ -94,7 +94,7 @@ export class ManageOrderComponent implements OnInit {
       return;
     }
 
-    this.productServices.getById(value.id).subscribe({
+    this.productServices.getById(value._id).subscribe({
       next: (response: any) => {
         if (!response || typeof response.price !== 'number') {
           throw new Error('Invalid product data received');
