@@ -73,52 +73,75 @@ export class ManageOrderComponent implements OnInit {
     );
   }
 
-  getProductByCategory(value: any) {
-    this.productServices.getProductByCategory(value.id).subscribe({
-      next: (response: any) => {
-        this.products = response;
-        this.manageOrderForm.controls['price'].setValue('');
-        this.manageOrderForm.controls['quantity'].setValue('');
-        this.manageOrderForm.controls['total'].setValue(0);
-      },
-      error: (error: any) => {
-        this.responseMessage = error.error?.message || GlobalConstants.genericError;
-        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
-      }
-    });
+getProductByCategory(value: any) {
+  if (!value?.id) {
+    this.snackbarServices.openSnackbar('Category ID is missing', GlobalConstants.error);
+    return;
   }
 
-  getProductDetails(value: any) {
-    if (!value || !value.id) {
-      this.snackbarServices.openSnackbar('Invalid product selection', GlobalConstants.error);
-      return;
+  const categoryId = value.id.toString(); // Ensure it's a string
+
+  this.productServices.getProductByCategory(categoryId).subscribe({
+    next: (response: any) => {
+      this.products = Array.isArray(response) ? response : [];
+      this.manageOrderForm.patchValue({
+        price: '',
+        quantity: '',
+        total: 0
+      });
+    },
+    error: (error: any) => {
+      this.responseMessage = error.error?.message || GlobalConstants.genericError;
+      this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
     }
+  });
+}
 
-    this.productServices.getById(value._id).subscribe({
-      next: (response: any) => {
-        if (!response || typeof response.price !== 'number') {
-          throw new Error('Invalid product data received');
-        }
+getProductDetails(value: any) {
+  // Ensure a valid product selection
+  const productId = value?._id || value?.id;
+  if (!productId) {
+    this.snackbarServices.openSnackbar('Invalid product selection', GlobalConstants.error);
+    this.manageOrderForm.patchValue({
+      price: null,
+      quantity: null,
+      total: 0
+    });
+    return;
+  }
 
-        this.price = response.price;
-        this.manageOrderForm.patchValue({
-          price: response.price,
-          quantity: '1',
-          total: response.price * 1
-        });
-      },
-      error: (error: any) => {
-        console.error('Error fetching product details:', error);
-        this.responseMessage = error.error?.message || GlobalConstants.genericError;
-        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
+  this.productServices.getById(productId).subscribe({
+    next: (response: any) => {
+      if (!response || typeof response.price !== 'number') {
+        this.snackbarServices.openSnackbar('Invalid product data received', GlobalConstants.error);
         this.manageOrderForm.patchValue({
           price: null,
           quantity: null,
           total: 0
         });
+        return;
       }
-    });
-  }
+
+      this.price = response.price;
+      this.manageOrderForm.patchValue({
+        price: response.price,
+        quantity: 1,
+        total: response.price * 1
+      });
+    },
+    error: (error: any) => {
+      console.error('Error fetching product details:', error);
+      this.responseMessage = error.error?.message || GlobalConstants.genericError;
+      this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
+      this.manageOrderForm.patchValue({
+        price: null,
+        quantity: null,
+        total: 0
+      });
+    }
+  });
+}
+
 
   serQuantity(value: any) {
     var temp = this.manageOrderForm.controls['quantity'].value;
@@ -138,24 +161,38 @@ export class ManageOrderComponent implements OnInit {
       return false;
   }
 
-  add() {
-    var formData = this.manageOrderForm.value;
-    var productName = this.dataSource.find((e: { id: number; }) => e.id == formData.product.id);
-    if (productName === undefined) {
-      this.totalAmount = this.totalAmount + formData.total;
+add() {
+  const formData = this.manageOrderForm.value;
 
-      this.dataSource.push({
-        id: formData.product.id, name: formData.product.name, category: formData.category.name,
-        quantity: formData.quantity, price: formData.price, total: formData.total
-      });
+  // Normalize product ID (_id or id) to string for consistent comparison
+  const newProductId = formData.product._id || formData.product.id;
 
-      this.dataSource = [...this.dataSource];
-      this.snackbarServices.openSnackbar(GlobalConstants.productAdded, "success");
-    }
-    else {
-      this.snackbarServices.openSnackbar(GlobalConstants.productExistError, GlobalConstants.error);
-    }
+  // Check if product already exists in dataSource
+  const existingProduct = this.dataSource.find((e: any) => {
+    const existingId = e.id || e._id;
+    return existingId.toString() === newProductId.toString();
+  });
+
+  if (!existingProduct) {
+    this.totalAmount += formData.total;
+
+    this.dataSource.push({
+      id: newProductId,
+      name: formData.product.name,
+      category: formData.category.name,
+      quantity: formData.quantity,
+      price: formData.price,
+      total: formData.total
+    });
+
+    // Refresh table
+    this.dataSource = [...this.dataSource];
+    this.snackbarServices.openSnackbar(GlobalConstants.productAdded, "success");
+  } else {
+    this.snackbarServices.openSnackbar(GlobalConstants.productExistError, GlobalConstants.error);
   }
+}
+
 
   handleDeleteAction(value: any, element: any) {
     this.totalAmount = this.totalAmount - element.total;
