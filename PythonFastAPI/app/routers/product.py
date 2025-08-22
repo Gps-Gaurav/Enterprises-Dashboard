@@ -73,17 +73,23 @@ async def get_products(
                     "name": 1,
                     "description": 1,
                     "price": 1,
-                    "status": 1,
+                    "status": 1,  # still fetch original string
                     "categoryId": {"$toString": "$category._id"},
                     "categoryName": "$category.name",
                 }
             },
         ]
+
         products = await db.product.aggregate(pipeline).to_list(length=None)
+
+        # Convert status to boolean: 'active' -> True, else False
+        for product in products:
+            product['status'] = True if product.get('status') == 'active' else False
+
         return products
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.get("/getByCategory/{id}", response_model=list[ProductResponse])
 async def get_products_by_category(
@@ -214,19 +220,20 @@ async def delete_product(
 
 @router.patch("/updateStatus")
 async def update_status(
-    data: ProductUpdateStatus,
+    data: ProductUpdateStatus,  # contains id (str) and status (bool)
     db: AsyncIOMotorClient = Depends(get_database),
     user: dict = Depends(authenticate_token),
-    _: bool = Depends(check_role),
 ):
     try:
         try:
             obj_id = ObjectId(data.id)
-        except bson_errors.InvalidId:
+        except Exception:
             raise HTTPException(status_code=400, detail="Invalid product ID")
 
+        # Directly store the boolean in DB
         result = await db.product.update_one(
-            {"_id": obj_id}, {"$set": {"status": data.status}}
+            {"_id": obj_id},
+            {"$set": {"status": data.status}}
         )
 
         if result.matched_count == 0:

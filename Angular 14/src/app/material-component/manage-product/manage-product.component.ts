@@ -130,17 +130,29 @@ handleEditAction(values: any) {
     );
   }
 
-  onChange(status: any, id: any) {
-    const data = { status: status.toString(), id: id };
-    this.productServices.updateStatus(data).subscribe(
-      (response: any) => {
-        this.responseMessage = response?.message;
-        this.snackbarServices.openSnackbar(this.responseMessage, 'success');
-      },
-      (error: any) => {
-        this.responseMessage = error.error?.message || GlobalConstants.genericError;
-        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
-      }
-    );
+onChange(status: boolean, id: string) {
+  if (!id) {
+    this.snackbarServices.openSnackbar('Product ID missing', GlobalConstants.error);
+    return;
   }
+
+  const data = {
+    id: id,
+    status: status // boolean directly
+  };
+
+  this.productServices.updateStatus(data).subscribe(
+    (response: any) => {
+      this.responseMessage = response?.message;
+      this.snackbarServices.openSnackbar(this.responseMessage, 'success');
+    },
+    (error: any) => {
+      this.responseMessage = error.error?.message || GlobalConstants.genericError;
+      this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
+    }
+  );
+}
+
+
+
 }
