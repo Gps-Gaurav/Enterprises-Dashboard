@@ -64,9 +64,9 @@ export class BillService {
       return [];
     }
   }
-  delete(id: any) {
-    return this.httpClient.delete(this.url + "/bill/delete/" + id, {
-     headers: this.headers
-    })
-  }
+deleteBill(id: number): Observable<any> {
+  return this.httpClient.delete(`${this.url}/bill/delete/${id}`, {
+    headers: new HttpHeaders().set('Content-Type', 'application/json')
+  });
+}
 }

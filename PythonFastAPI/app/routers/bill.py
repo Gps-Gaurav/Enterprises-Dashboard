@@ -124,15 +124,23 @@ async def delete_bill(
     db: AsyncIOMotorClient = Depends(get_database),
     user: dict = Depends(authenticate_token),
 ):
+    # Validate input
+    if not id or id == "undefined":
+        raise HTTPException(status_code=400, detail="Bill ID is required")
+
+    # Try converting to ObjectId first
     try:
+        filter_query = {"_id": ObjectId(id)}
+    except bson_errors.InvalidId:
+        # Fallback: treat as numeric billId (if you have numeric IDs)
         try:
-            obj_id = ObjectId(id)
-        except Exception:
+            filter_query = {"billId": int(id)}
+        except ValueError:
             raise HTTPException(status_code=400, detail="Invalid bill ID")
 
-        result = await db.bills.delete_one({"_id": obj_id})
-        if result.deleted_count == 0:
-            raise HTTPException(status_code=404, detail="Bill not found")
-        return {"message": "Bill deleted successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    # Delete bill
+    result = await db.bills.delete_one(filter_query)
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Bill ID does not exist")
+
+    return {"message": "Bill deleted successfully"}

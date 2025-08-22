@@ -72,27 +72,36 @@ export class ViewBillComponent implements OnInit {
     });
   }
 
-  handleDeleteAction(values: any) {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = { message: 'delete ' + values.name + ' bill' };
-    const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
-    const sub = dialogRef.componentInstance.onEmitStatuschange.subscribe(() => {
-      this.deleteProduct(values.id);
-      dialogRef.close();
-    });
-  }
+handleDeleteAction(values: any) {
+  const dialogConfig = new MatDialogConfig();
+  dialogConfig.data = { message: `Delete ${values.name} bill?` };
 
-  deleteProduct(id: any) {
-    this.billServices.delete(id).subscribe(
-      (response: any) => {
-        this.tableData();
-        this.responseMessage = response?.message;
-        this.snackbarServices.openSnackbar(this.responseMessage, "success");
-      },
-      (error: any) => {
-        this.responseMessage = error.error?.message || GlobalConstants.genericError;
-        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
-      }
-    );
-  }
+  const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
+  const sub = dialogRef.componentInstance.onEmitStatuschange.subscribe(() => {
+    if (!values._id) {
+      this.snackbarServices.openSnackbar('Bill ID missing', GlobalConstants.error);
+      dialogRef.close();
+      return;
+    }
+    this.deleteBill(values._id);
+    dialogRef.close();
+    sub.unsubscribe();
+  });
+}
+
+deleteBill(id: any) {
+  this.billServices.deleteBill(id).subscribe(
+    (response: any) => {
+      this.tableData(); // Refresh bill table
+      this.responseMessage = response?.message;
+      this.snackbarServices.openSnackbar(this.responseMessage, 'success');
+    },
+    (error: any) => {
+      this.responseMessage = error.error?.message || GlobalConstants.genericError;
+      this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
+    }
+  );
+}
+
+
 }
