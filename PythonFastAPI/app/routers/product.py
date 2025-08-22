@@ -52,16 +52,10 @@ async def get_products(
 ):
     try:
         pipeline = [
-            # Convert categoryId from string to ObjectId for lookup
-            {
-                "$addFields": {
-                    "categoryObjId": {"$toObjectId": "$categoryId"}
-                }
-            },
             {
                 "$lookup": {
                     "from": "category",
-                    "localField": "categoryObjId",
+                    "localField": "categoryId",
                     "foreignField": "_id",
                     "as": "category",
                 }
@@ -73,7 +67,7 @@ async def get_products(
                     "name": 1,
                     "description": 1,
                     "price": 1,
-                    "status": 1,  # still fetch original string
+                    "status": 1,  # boolean stored in DB
                     "categoryId": {"$toString": "$category._id"},
                     "categoryName": "$category.name",
                 }
@@ -82,9 +76,10 @@ async def get_products(
 
         products = await db.product.aggregate(pipeline).to_list(length=None)
 
-        # Convert status to boolean: 'active' -> True, else False
+        # Ensure status is boolean (in case DB has string 'active'/'inactive')
         for product in products:
-            product['status'] = True if product.get('status') == 'active' else False
+            if isinstance(product.get('status'), str):
+                product['status'] = True if product['status'] == 'active' else False
 
         return products
 
@@ -98,8 +93,10 @@ async def get_products_by_category(
     user: dict = Depends(authenticate_token),
 ):
     try:
-        category_obj_id = ObjectId(id)
+        category_obj_id = ObjectId(id)  # convert string id to ObjectId
+
         pipeline = [
+            # Match products of this category and active status
             {"$match": {"categoryId": category_obj_id, "status": True}},
             {
                 "$lookup": {
@@ -122,12 +119,14 @@ async def get_products_by_category(
                 }
             },
         ]
+
         products = await db.product.aggregate(pipeline).to_list(length=None)
+
+        # Status is already boolean in DB, so frontend toggle will work
         return products
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
 
 @router.get("/getById/{id}", response_model=ProductResponse)
 async def get_product_by_id(

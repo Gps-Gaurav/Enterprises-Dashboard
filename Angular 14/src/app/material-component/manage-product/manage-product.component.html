@@ -41,7 +41,7 @@
         </button>
 <mat-slide-toggle
     [checked]="element.status"
-    (change)="onChange($event.checked, element._id)"
+    (change)="onChange($event.checked, element._id, element)"
     matTooltip="Activate or Deactivate Product">
 </mat-slide-toggle>
 

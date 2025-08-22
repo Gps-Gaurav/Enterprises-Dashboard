@@ -130,25 +130,28 @@ handleEditAction(values: any) {
     );
   }
 
-onChange(status: boolean, id: string) {
+onChange(status: boolean, id: string, element: any) {
   if (!id) {
     this.snackbarServices.openSnackbar('Product ID missing', GlobalConstants.error);
     return;
   }
 
-  const data = {
-    id: id,
-    status: status // boolean directly
-  };
+  const data = { id: id, status: status };
 
   this.productServices.updateStatus(data).subscribe(
     (response: any) => {
       this.responseMessage = response?.message;
       this.snackbarServices.openSnackbar(this.responseMessage, 'success');
+
+      // Update local element to reflect new status immediately
+      element.status = status;
     },
     (error: any) => {
       this.responseMessage = error.error?.message || GlobalConstants.genericError;
       this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
+
+      // Revert toggle if failed
+      element.status = !status;
     }
   );
 }
