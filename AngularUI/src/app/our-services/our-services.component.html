@@ -1,0 +1,31 @@
+<section class="our-services">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Our Services</h2>
+      <p class="section-subtitle">Comprehensive solutions to streamline your business operations</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card" *ngFor="let service of services">
+        <div class="service-header">
+          <div class="service-icon">
+            <i class="fas" [ngClass]="service.icon"></i>
+          </div>
+          <h3 class="service-title">{{ service.title }}</h3>
+        </div>
+
+        <p class="service-description">{{ service.description }}</p>
+
+        <div class="service-features">
+          <h4>Key Features:</h4>
+          <ul>
+            <li *ngFor="let feature of service.features">
+              <i class="fas fa-check-circle"></i>
+              {{ feature }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

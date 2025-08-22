@@ -1,0 +1,19 @@
+<div class="reusable-carousel" [style.height]="height">
+  <owl-carousel-o [options]="customOptions">
+    <ng-template carouselSlide *ngFor="let slide of items">
+      <div class="carousel-slide">
+        <img
+          [src]="slide.url"
+          [alt]="slide.alt || 'Image'"
+          class="slide-image"
+          (load)="onImageLoad($event)"
+          (error)="onImageError($event)">
+        <div class="slide-overlay" *ngIf="showOverlay"></div>
+        <div class="slide-content" *ngIf="showOverlay && slide.title">
+          <h3 class="slide-title">{{ slide.title }}</h3>
+          <p class="slide-description" *ngIf="slide.description">{{ slide.description }}</p>
+        </div>
+      </div>
+    </ng-template>
+  </owl-carousel-o>
+</div>

@@ -1,0 +1,66 @@
+
+// footer.component.scss
+.footer-section {
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+
+  .footer-logo {
+    max-height: 50px;
+    width: auto;
+  }
+
+  .social-links {
+    .social-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-color: #007bff;
+      color: white;
+      margin: 0 8px;
+      text-decoration: none;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+
+      &:hover {
+        transform: translateY(-3px);
+        background-color: #0056b3;
+      }
+
+      i {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .contact-info {
+    p {
+      color: #6c757d;
+
+      i {
+        color: #007bff;
+      }
+    }
+  }
+
+  .footer-divider {
+    border-color: #dee2e6;
+    margin: 1rem 0;
+  }
+
+  @media (max-width: 992px) {
+    .text-lg-start,
+    .text-lg-end {
+      text-align: center !important;
+    }
+
+    .social-links {
+      margin: 1rem 0;
+    }
+
+    .contact-info {
+      margin-top: 1rem;
+    }
+  }
+}

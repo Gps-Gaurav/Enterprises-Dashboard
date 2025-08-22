@@ -1,0 +1,251 @@
+
+.reusable-carousel {
+  position: relative;
+  height: 400px; // Default height
+  overflow: hidden;
+  border-radius: 12px;
+  width: 100%;
+
+  .carousel-container {
+    height: 100% !important;
+    width: 100%;
+
+    .main-carousel {
+      height: 100% !important;
+
+      // Force owl-carousel height
+      ::ng-deep {
+        .owl-carousel {
+          height: 100% !important;
+
+          .owl-stage-outer {
+            height: 100% !important;
+          }
+
+          .owl-stage {
+            height: 100% !important;
+            display: flex !important;
+          }
+
+          .owl-item {
+            height: 100% !important;
+            display: flex !important;
+
+            &.active {
+              height: 100% !important;
+            }
+          }
+        }
+      }
+
+      .carousel-slide {
+        height: 100% !important;
+        min-height: 400px;
+        position: relative;
+        display: block !important;
+
+        .slide-background {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 1;
+
+          .slide-image {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+          }
+        }
+      }
+    }
+  }
+}
+/* Global Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #384047;
+}
+
+/* Header */
+.header {
+  padding: 40px;
+  text-align: center;
+  background: #257587;
+  color: white;
+}
+
+/* Navigation */
+.wrapper {
+  background-color: #0c3b81;
+  padding: 15px 0;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.logo {
+  color: white;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+ul {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+}
+
+ul a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1em;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+ul a:hover {
+  color: #F8E71C;
+}
+
+ul a::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  right: 50%;
+  height: 2px;
+  background: #F8E71C;
+  transition: all 0.3s ease;
+}
+
+ul a:hover::after {
+  left: 0;
+  right: 0;
+}
+
+/* Layout */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.side {
+  flex: 30%;
+  background: #f1f1f1;
+  padding: 20px;
+}
+
+.main {
+  flex: 70%;
+  background: white;
+  padding: 20px;
+}
+
+.column {
+  flex: 25%;
+  padding: 20px;
+}
+
+/* Background Image Section */
+.bg-image {
+  background-image: url("../../assets/img/food1.jpg");
+  background-position: center;
+  background-size: cover;
+  height: 100vh;
+  position: relative;
+  filter: blur(3px);
+}
+
+.bg-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 30px;
+  border: 3px solid #f1f1f1;
+  text-align: center;
+  width: 90%;
+  max-width: 600px;
+}
+
+/* Footer */
+.footer {
+  background: #283039;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Utilities */
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.fakeimg {
+  background: #aaa;
+  padding: 20px;
+  color: white;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .column {
+    flex: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  ul {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+
+  .side, .main {
+    flex: 100%;
+  }
+
+  .column {
+    flex: 100%;
+  }
+
+  .bg-text {
+    width: 95%;
+    padding: 20px;
+  }
+}

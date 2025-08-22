@@ -1,0 +1,102 @@
+.reusable-carousel {
+  height: 400px;
+  width: 100%;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+
+  .carousel-container { height: 100%; }
+  .main-carousel { height: 100%; }
+
+  // Owl height fixes (keep)
+  ::ng-deep {
+    .owl-carousel { height: 100% !important; display: block !important; }
+
+    .owl-stage-outer { height: 100% !important; }
+    .owl-stage { height: 100% !important; display: flex !important; }
+    .owl-item { height: 100% !important; display: flex !important; }
+    .owl-item > div { height: 100% !important; width: 100% !important; }
+
+    // Minimal nav
+    .owl-nav {
+      button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.85) !important;
+        color: #2c3e50 !important;
+        border: 0 !important;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        transition: transform .2s ease, background .2s ease;
+        cursor: pointer !important;
+      }
+      .owl-prev { left: 12px; }
+      .owl-next { right: 12px; }
+      button:hover { background: #fff !important; transform: translateY(-50%) scale(1.06); }
+    }
+
+    // Minimal dots
+    .owl-dots {
+      position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 8px;
+      .owl-dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: rgba(255,255,255,0.6);
+        transition: transform .2s ease, background .2s ease;
+      }
+      .owl-dot.active { background: #fff; transform: scale(1.15); }
+    }
+  }
+
+  .carousel-slide {
+    height: 100% !important; width: 100%; position: relative; overflow: hidden;
+
+    // Image layer
+    .slide-background {
+      position: absolute; inset: 0;
+      .slide-image {
+        height: 100% !important; width: 100% !important;
+        object-fit: cover; display: block !important;
+        transform: scale(1); transition: transform 0.6s ease;
+      }
+      // Subtle top/bottom gradient for readability
+      &::after {
+        content: '';
+        position: absolute; inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.35), rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.45));
+        pointer-events: none;
+      }
+    }
+
+    // Centered content
+    .slide-content {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2; color: #fff; text-align: center;
+      width: min(90%, 800px); padding: 0 16px;
+
+      .slide-title {
+        margin: 0 0 8px; font-size: clamp(1.25rem, 3.2vw, 2rem); font-weight: 700;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      }
+      .slide-description {
+        margin: 0 auto; max-width: 720px;
+        font-size: clamp(0.9rem, 2.4vw, 1.1rem); line-height: 1.5;
+        opacity: 0.95; text-shadow: 0 1px 6px rgba(0,0,0,0.35);
+      }
+    }
+
+    // Subtle hover zoom (desktop)
+    @media (hover: hover) and (pointer: fine) {
+      &:hover .slide-image { transform: scale(1.03); }
+    }
+  }
+
+  // Responsive container height
+  @media (max-width: 992px) { height: 360px; }
+  @media (max-width: 768px) { height: 320px; }
+  @media (max-width: 480px) { height: 260px; border-radius: 8px; }
+}

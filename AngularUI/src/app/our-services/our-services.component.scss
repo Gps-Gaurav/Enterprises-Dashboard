@@ -1,0 +1,48 @@
+.our-services {
+  padding: 60px 0;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+  .section-header {
+    text-align: center; margin-bottom: 32px;
+    .section-title {
+      margin: 0 0 10px; color: #2c3e50; font: 700 2.1rem/1.2 inherit; position: relative;
+      &::after { content: ''; position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%); width: 60px; height: 3px; border-radius: 2px; background: linear-gradient(90deg,#3498db,#2980b9); }
+    }
+    .section-subtitle { margin: 0 auto; max-width: 560px; color: #7a8691; font-size: .98rem; }
+  }
+
+  .services-grid {
+    display: grid; gap: 20px; grid-template-columns: repeat(3, minmax(0,1fr));
+    @media (max-width: 992px) { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    @media (max-width: 640px) { grid-template-columns: 1fr; }
+  }
+
+  .service-card {
+    background: #fff; border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.08); transition: transform .2s ease, box-shadow .2s ease;
+    &:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(0,0,0,.12); }
+
+    .service-header {
+      display: flex; align-items: center; gap: 12px;
+      .service-icon {
+        width: 46px; height: 46px; border-radius: 50%;
+        display: grid; place-items: center; color: #fff;
+        background: linear-gradient(135deg,#3498db,#2980b9);
+        i { font-size: 18px; }
+      }
+      .service-title { margin: 0; color: #2c3e50; font: 600 1.2rem/1.2 inherit; }
+    }
+
+    .service-description { margin: 0; color: #66707a; line-height: 1.6; font-size: .98rem; }
+
+    .service-features {
+      h4 { margin: 6px 0 8px; color: #2c3e50; font: 600 1rem/1.3 inherit; }
+      ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+      li { display: flex; align-items: center; gap: 8px; color: #34495e; font-size: .95rem;
+        i { color: #27ae60; font-size: 14px; }
+      }
+    }
+  }
+}
