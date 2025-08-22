@@ -4,6 +4,7 @@ pydantic
 pydantic-settings
 weasyprint
 jinja2
+gunicorn
 
 # MongoDB
 motor
