@@ -132,15 +132,17 @@ async def get_users(db: AsyncIOMotorClient = Depends(get_database),
 
 
 @router.patch("/update")
-async def update_user_status(body: UserUpdateStatus, db: AsyncIOMotorClient = Depends(get_database),
-                             _user: dict = Depends(authenticate_token),
-                             _role: None = Depends(check_role)):
+async def update_user_status(
+    body: UserUpdateStatus,
+    db: AsyncIOMotorClient = Depends(get_database),
+    _user: dict = Depends(authenticate_token),
+    _role: None = Depends(check_role)
+):
     users = db.user
     result = await users.update_one({"_id": ObjectId(body.id)}, {"$set": {"status": body.status}})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="user id not found")
     return {"message": "user updated successfully"}
-
 
 @router.get("/checkToken")
 async def check_token(_user: dict = Depends(authenticate_token),

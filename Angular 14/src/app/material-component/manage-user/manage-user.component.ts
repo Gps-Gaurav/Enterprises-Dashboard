@@ -45,18 +45,32 @@ export class ManageUserComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  handleChangeAction(status: any, id: any) {
-    const data = { status: status.toString(), id: id };
-    this.userServices.update(data).subscribe(
-      (response: any) => {
-        this.responseMessage = response?.message;
-        this.snackbarServices.openSnackbar(this.responseMessage, "success");
-        this.tableData(); // refresh table after status change
-      },
-      (error: any) => {
-        this.responseMessage = error.error?.message || GlobalConstants.genericError;
-        this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
-      }
-    );
+handleChangeAction(status: boolean, id: string, element: any) {
+  if (!id) {
+    this.snackbarServices.openSnackbar('User ID missing', GlobalConstants.error);
+    return;
   }
+
+  const data = { id: id, status: status }; // pass boolean
+
+  this.userServices.update(data).subscribe(
+    (response: any) => {
+      this.responseMessage = response?.message;
+      this.snackbarServices.openSnackbar(this.responseMessage, 'success');
+
+      // Update local element to reflect new status immediately
+      element.status = status;
+    },
+    (error: any) => {
+      this.responseMessage = error.error?.message || GlobalConstants.genericError;
+      this.snackbarServices.openSnackbar(this.responseMessage, GlobalConstants.error);
+
+      // Revert toggle if failed
+      element.status = !status;
+    }
+  );
+}
+
+
+
 }
