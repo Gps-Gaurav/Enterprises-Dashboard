@@ -14,8 +14,9 @@ import { ForgotPasswordComponent } from '../forgot-password/forgot-password.comp
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  loginForm: any = FormGroup;
-  responseMessage: any;
+  loginForm!: FormGroup;
+  responseMessage: string = '';
+  isLoading: boolean = false;   // 🔑 Spinner flag
 
   constructor(
     private formBuilder: FormBuilder,
@@ -24,7 +25,7 @@ export class LoginComponent implements OnInit {
     private snackbarservices: SnackbarService,
     private dialogRef: MatDialogRef<SignupComponent>,
     private dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
@@ -33,32 +34,39 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  ForgotPasswordAction() {
+  ForgotPasswordAction(): void {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = "500px";
+    dialogConfig.width = '500px';
     this.dialog.open(ForgotPasswordComponent, dialogConfig);
   }
 
-  signupAction() {
+  signupAction(): void {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = "500px";
+    dialogConfig.width = '500px';
     this.dialog.open(SignupComponent, dialogConfig);
   }
 
-  handleSubmit() {
+  handleSubmit(): void {
+    if (this.loginForm.invalid) {
+      return;
+    }
+
+    this.isLoading = true;  // ⏳ Show spinner
     const formData = this.loginForm.value;
     const data = {
       email: formData.email,
-      password: formData.password
+      password: formData.password,
     };
 
     this.userServices.login(data).subscribe(
-      (Response: any) => {
+      (response: any) => {
+        this.isLoading = false; // ✅ Hide spinner
         this.dialogRef.close();
-        localStorage.setItem('token', Response.token);
+        localStorage.setItem('token', response.token);
         this.router.navigate(['/cafe/dashboard']);
       },
       (error) => {
+        this.isLoading = false; // ✅ Hide spinner
         if (error.error?.message) {
           this.responseMessage = error.error?.message;
         } else {

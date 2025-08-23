@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-  <mat-toolbar-row fxlayout="row">
+  <mat-toolbar-row fxLayout="row">
     <span class="tille-center">Login</span>
   </mat-toolbar-row>
 </mat-toolbar>
@@ -8,36 +8,28 @@
   <form [formGroup]="loginForm">
     <div fxFlex fxLayout="column">
       <mat-form-field appearance="fill" fxFlex>
-        <mat-label>email</mat-label>
+        <mat-label>Email</mat-label>
         <input tabindex="1" matInput formControlName="email" required />
         <mat-error
-          *ngIf="
-            loginForm.controls.email.touched && loginForm.controls.email.invalid
-          "
+          *ngIf="loginForm.controls.email.touched && loginForm.controls.email.invalid"
         >
-          <span *ngIf="loginForm.controls.email.errors.required"
-            >This field is mandatory.
+          <span *ngIf="loginForm.controls.email.errors?.required">
+            This field is mandatory.
           </span>
-          <span *ngIf="loginForm.controls.email.errors.pattern"
-            >This field is invalid.
+          <span *ngIf="loginForm.controls.email.errors?.pattern">
+            This field is invalid.
           </span>
         </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="fill" fxFlex>
         <mat-label>Password</mat-label>
-        <input matInput tabindex="2" formControlName="password" required />
+        <input matInput tabindex="2" formControlName="password" type="password" required />
         <mat-error
-          *ngIf="
-            loginForm.controls.password.touched &&
-            loginForm.controls.password.invalid
-          "
+          *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid"
         >
-          <span *ngIf="loginForm.controls.password.errors.required"
-            >This field is mandatory.
-          </span>
-          <span *ngIf="loginForm.controls.password.errors.pattern"
-            >This field is invalid.
+          <span *ngIf="loginForm.controls.password.errors?.required">
+            This field is mandatory.
           </span>
         </mat-error>
       </mat-form-field>
@@ -46,39 +38,56 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="center">
+  <!-- Login Button with Spinner -->
   <button
     mat-raised-button
     color="primary"
     type="submit"
     (click)="handleSubmit()"
     tabindex="3"
-    [disabled]="!(loginForm.valid && loginForm.dirty)"
+    [disabled]="isLoading || !(loginForm.valid && loginForm.dirty)"
   >
-    Login
+    <mat-progress-spinner
+      *ngIf="isLoading"
+      mode="indeterminate"
+      diameter="20"
+      strokeWidth="3"
+    ></mat-progress-spinner>
+    <span *ngIf="!isLoading">Login</span>
   </button>
-  <button mat-raised-button colour="primary" mat-dialog-close tabindex="4">
+
+  <!-- Close Button -->
+  <button
+    mat-raised-button
+    color="primary"
+    mat-dialog-close
+    tabindex="4"
+    [disabled]="isLoading"
+  >
     Close
   </button>
 </mat-dialog-actions>
-<div>
+
+<!-- Links -->
+<div class="links">
   <div>
     <a
       (click)="signupAction()"
       style="cursor: pointer"
-      onmouseover="this.style.color='blue'"
-      onmouseout="this.style.color='black'"
+      [style.color]="isLoading ? 'grey' : 'black'"
+      [style.pointer-events]="isLoading ? 'none' : 'auto'"
     >
-      Register</a
-    >
+      Register
+    </a>
   </div>
   <div>
     <a
       (click)="ForgotPasswordAction()"
       style="cursor: pointer"
-      onmouseover="this.style.color='blue'"
-      onmouseout="this.style.color='black'"
+      [style.color]="isLoading ? 'grey' : 'black'"
+      [style.pointer-events]="isLoading ? 'none' : 'auto'"
     >
-      Forgot Password</a
-    >
+      Forgot Password
+    </a>
   </div>
 </div>

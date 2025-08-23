@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-  <mat-toolbar-row fxlayout="row">
+  <mat-toolbar-row fxLayout="row">
     <span class="tille-center">Register</span>
   </mat-toolbar-row>
 </mat-toolbar>
@@ -9,57 +9,70 @@
     <div fxFlex fxLayout="column">
 
       <mat-form-field appearance="fill" fxFlex>
-        <mat-label>name</mat-label>
+        <mat-label>Name</mat-label>
         <input matInput formControlName="name" required>
         <mat-error *ngIf="signupForm.controls.name.touched && signupForm.controls.name.invalid">
-          <span *ngIf="signupForm.controls.name.errors.required">This field is mandatory. </span>
-          <span *ngIf="signupForm.controls.name.errors.pattern">This field is invalid. </span>
+          <span *ngIf="signupForm.controls.name.errors?.required">This field is mandatory.</span>
+          <span *ngIf="signupForm.controls.name.errors?.pattern">This field is invalid.</span>
         </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="fill" fxFlex>
-        <mat-label>email</mat-label>
+        <mat-label>Email</mat-label>
         <input matInput formControlName="email" required>
         <mat-error *ngIf="signupForm.controls.email.touched && signupForm.controls.email.invalid">
-          <span *ngIf="signupForm.controls.email.errors.required">This field is mandatory. </span>
-          <span *ngIf="signupForm.controls.email.errors.pattern">This field is invalid. </span>
+          <span *ngIf="signupForm.controls.email.errors?.required">This field is mandatory.</span>
+          <span *ngIf="signupForm.controls.email.errors?.pattern">This field is invalid.</span>
         </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="fill" fxFlex>
-        <mat-label>contact Number</mat-label>
+        <mat-label>Contact Number</mat-label>
         <input matInput formControlName="contactNumber" required>
         <mat-error *ngIf="signupForm.controls.contactNumber.touched && signupForm.controls.contactNumber.invalid">
-          <span *ngIf="signupForm.controls.contactNumber.errors.required">This field is mandatory. </span>
-          <span *ngIf="signupForm.controls.contactNumber.errors.pattern">This field is invalid. </span>
+          <span *ngIf="signupForm.controls.contactNumber.errors?.required">This field is mandatory.</span>
+          <span *ngIf="signupForm.controls.contactNumber.errors?.pattern">This field is invalid.</span>
         </mat-error>
       </mat-form-field>
+
       <mat-form-field appearance="fill" fxFlex>
         <mat-label>Password</mat-label>
-        <input matInput formControlName="password" required>
+        <input matInput type="password" formControlName="password" required>
         <mat-error *ngIf="signupForm.controls.password.touched && signupForm.controls.password.invalid">
-          <span *ngIf="signupForm.controls.password.errors.required">This field is mandatory. </span>
-          <span *ngIf="signupForm.controls.password.errors.pattern">This field is invalid. </span>
+          <span *ngIf="signupForm.controls.password.errors?.required">This field is mandatory.</span>
+          <span *ngIf="signupForm.controls.password.errors?.pattern">This field is invalid.</span>
         </mat-error>
       </mat-form-field>
 
     </div>
-
   </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="center">
+  <!-- Register button with loader -->
+  <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
+    [disabled]="isLoading || !(signupForm.valid && signupForm.dirty)">
+    <mat-progress-spinner
+      *ngIf="isLoading"
+      mode="indeterminate"
+      diameter="20"
+      strokeWidth="3">
+    </mat-progress-spinner>
+    <span *ngIf="!isLoading">Register</span>
+  </button>
 
-  <button mat-raised-button color="primary" type="submit" (click)="handleSubmit() "
-    [disabled]="!(signupForm.valid && signupForm.dirty)">Register</button>
-  <button mat-raised-button colour="primary" mat-dialog-close>Close</button>
-
+  <!-- Close button -->
+  <button mat-raised-button color="primary" mat-dialog-close [disabled]="isLoading">
+    Close
+  </button>
 </mat-dialog-actions>
 
 <div style="margin-top: 10px; text-align: center;">
-  <span>If you are already Register ?</span>
-  <a (click)="loginAction()" style="cursor: pointer"
-     onmouseover="this.style.color='blue'"
-     onmouseout="this.style.color='black'"> Login</a>
+  <span>If you are already registered?</span>
+  <a (click)="loginAction()"
+     style="cursor: pointer"
+     [style.color]="isLoading ? 'grey' : 'black'"
+     [style.pointer-events]="isLoading ? 'none' : 'auto'">
+    Login
+  </a>
 </div>
-

@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarService } from '../services/snackbar.service';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { GlobalConstants } from '../shared/global-constrants';
-import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { time } from 'console';
 import { LoginComponent } from '../login/login.component';
 
 @Component({
@@ -16,55 +13,65 @@ import { LoginComponent } from '../login/login.component';
   styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent implements OnInit {
+  signupForm!: FormGroup;
+  responseMessage: string = '';
+  isLoading: boolean = false;   // 🔑 flag for button spinner
 
-  signupForm: any = FormGroup;
-  responseMessage: any;
-
-  constructor(private formBuilder: FormBuilder, private router: Router,
-    private userServices: UserService, private snackbarservices: SnackbarService,
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private userServices: UserService,
+    private snackbarservices: SnackbarService,
     private dialogRef: MatDialogRef<SignupComponent>,
-    private ngxService: NgxUiLoaderService, private dialog: MatDialog) {}
+    private dialog: MatDialog
+  ) {}
+
   ngOnInit(): void {
     this.signupForm = this.formBuilder.group({
       name: [null, [Validators.required, Validators.pattern(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/)]],
       email: [null, [Validators.required, Validators.pattern(GlobalConstants.emailRegex)]],
       contactNumber: [null, [Validators.required, Validators.pattern(GlobalConstants.contactNumberRegex)]],
       password: [null, [Validators.required]],
-    })
+    });
   }
-  loginAction() {
+
+  loginAction(): void {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = "500px";
+    dialogConfig.width = '500px';
     this.dialog.open(LoginComponent, dialogConfig);
   }
-  handleSubmit() {
-    this.ngxService.start();
-    var formData = this.signupForm.value
-    var data = {
+
+  handleSubmit(): void {
+    if (this.signupForm.invalid) {
+      return;
+    }
+
+    this.isLoading = true;  // ⏳ show button spinner
+    const formData = this.signupForm.value;
+    const data = {
       name: formData.name,
       email: formData.email,
       contactNumber: formData.contactNumber,
       password: formData.password
+    };
 
-    }
-    this.userServices.signUp(data).subscribe((Response:any)=>{
-      this.ngxService.stop();
-      this.dialogRef.close();
-      this.responseMessage = Response?.message;
-      this.snackbarservices.openSnackbar(this.responseMessage,"");
-      this.router.navigate(['/']);
-
-    },(error)=>{
-      this.ngxService.stop();
-      if(error.error?.message){
-        this.responseMessage = error.error?.message;
-
-      }else{
-        this.responseMessage = GlobalConstants.genericError;
-
+    this.userServices.signUp(data).subscribe(
+      (response: any) => {
+        this.isLoading = false;  // ✅ stop spinner
+        this.dialogRef.close();
+        this.responseMessage = response?.message;
+        this.snackbarservices.openSnackbar(this.responseMessage, '');
+        this.router.navigate(['/']);
+      },
+      (error) => {
+        this.isLoading = false;  // ✅ stop spinner
+        if (error.error?.message) {
+          this.responseMessage = error.error?.message;
+        } else {
+          this.responseMessage = GlobalConstants.genericError;
+        }
+        this.snackbarservices.openSnackbar(this.responseMessage, GlobalConstants.error);
       }
-      this.snackbarservices.openSnackbar(this.responseMessage,GlobalConstants.error);
-    })
+    );
   }
-
 }
